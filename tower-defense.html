@@ -303,8 +303,8 @@
 
     function resize(){
       const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = Math.max(900, rect.width * devicePixelRatio);
-      canvas.height = Math.max(580, rect.height * devicePixelRatio);
+      canvas.width = Math.max(1, Math.round(rect.width * devicePixelRatio));
+      canvas.height = Math.max(1, Math.round(rect.height * devicePixelRatio));
       draw();
     }
 
@@ -527,7 +527,7 @@
       for(let r=0;r<grid.rows;r++) for(let c=0;c<grid.cols;c++){ const p=cellCenter(c,r); ctx.fillStyle=(c+r)%2?'rgba(255,255,255,.035)':'rgba(0,0,0,.06)'; roundRect(p.x-o.s*.45,p.y-o.s*.45,o.s*.9,o.s*.9,12*devicePixelRatio,true); }
     }
     function drawGrid(){ const o=boardOrigin(); ctx.strokeStyle='rgba(255,255,255,.08)'; ctx.lineWidth=1; for(let c=0;c<=grid.cols;c++){ line(o.x+c*o.s,o.y,o.x+c*o.s,o.y+grid.rows*o.s); } for(let r=0;r<=grid.rows;r++){ line(o.x,o.y+r*o.s,o.x+grid.cols*o.s,o.y+r*o.s); } }
-    function drawPath(){ const o=boardOrigin(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=o.s*.74; ctx.strokeStyle='#704529'; ctx.beginPath(); path.forEach((p,i)=>{ const c=worldCell({x:p.x,y:p.y}); i?ctx.lineTo(c.x,c.y):ctx.moveTo(c.x,c.y); }); ctx.stroke(); ctx.lineWidth=o.s*.52; ctx.strokeStyle='#9b693b'; ctx.stroke(); ctx.setLineDash([o.s*.28,o.s*.24]); ctx.lineWidth=3*devicePixelRatio; ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.stroke(); ctx.setLineDash([]); }
+    function drawPath(){ const o=boardOrigin(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=o.s*.74; ctx.strokeStyle='#704529'; ctx.beginPath(); path.forEach((p,i)=>{ const c=worldCell({x:p.x+.5,y:p.y+.5}); i?ctx.lineTo(c.x,c.y):ctx.moveTo(c.x,c.y); }); ctx.stroke(); ctx.lineWidth=o.s*.52; ctx.strokeStyle='#9b693b'; ctx.stroke(); ctx.setLineDash([o.s*.28,o.s*.24]); ctx.lineWidth=3*devicePixelRatio; ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.stroke(); ctx.setLineDash([]); }
     function drawTowers(){ const o=boardOrigin(); state.towers.forEach(t=>{ const f=fruits[t.type], p=cellCenter(t.c,t.r); if(t.id===state.selectedTower){ ctx.fillStyle='rgba(255,209,102,.16)'; ctx.beginPath(); ctx.arc(p.x,p.y,towerStats(t).range*o.s,0,Math.PI*2); ctx.fill(); } ctx.fillStyle='rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(p.x,p.y+o.s*.18,o.s*.26,o.s*.1,0,0,Math.PI*2); ctx.fill(); ctx.font=`${Math.round(o.s*.48)}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(f.icon,p.x,p.y-o.s*.04); ctx.fillStyle='rgba(0,0,0,.55)'; roundRect(p.x-o.s*.28,p.y+o.s*.22,o.s*.56,o.s*.18,999,true); ctx.fillStyle='#fff'; ctx.font=`700 ${Math.round(o.s*.12)}px sans-serif`; ctx.fillText(`Nv ${t.level}`,p.x,p.y+o.s*.31); }); }
     function drawBugs(){ const o=boardOrigin(); state.bugs.forEach(b=>{ const p=worldCell({x:b.x+.5,y:b.y+.5}); ctx.fillStyle='rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(p.x,p.y+o.s*.16,o.s*.22,o.s*.09,0,0,Math.PI*2); ctx.fill(); ctx.font=`${Math.round(o.s*(b.boss?.56:.38))}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(b.icon,p.x,p.y); const w=o.s*.54, h=6*devicePixelRatio; ctx.fillStyle='rgba(0,0,0,.55)'; ctx.fillRect(p.x-w/2,p.y-o.s*.33,w,h); ctx.fillStyle=b.slow>0?'#5ec8ff':'#ff5a6d'; ctx.fillRect(p.x-w/2,p.y-o.s*.33,w*clamp(b.hp/b.maxHp,0,1),h); }); }
     function drawShots(){ const o=boardOrigin(); state.shots.forEach(s=>{ const p=worldCell(s); ctx.fillStyle=s.color; ctx.beginPath(); ctx.arc(p.x,p.y,o.s*.08,0,Math.PI*2); ctx.fill(); ctx.fillStyle='rgba(255,255,255,.8)'; ctx.font=`${Math.round(o.s*.14)}px serif`; ctx.fillText(s.icon,p.x,p.y-o.s*.12); }); }
