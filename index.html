@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prancheta Tática Multiesporte</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020;
+      --panel: #121a2e;
+      --panel-2: #17213a;
+      --line: rgba(255,255,255,.82);
+      --muted-line: rgba(255,255,255,.32);
+      --accent: #37d67a;
+      --accent-2: #46a7ff;
+      --danger: #ff5c7a;
+      --warning: #ffd166;
+      --text: #f5f7fb;
+      --muted: #aab7d4;
+      --shadow: 0 24px 70px rgba(0,0,0,.35);
+      --radius: 18px;
+      --court-fill: #1f8d58;
+      --court-alt: #2f9b67;
+      --wood: #bc7a3d;
+      --wood-alt: #d49452;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(70,167,255,.25), transparent 34rem),
+        radial-gradient(circle at bottom right, rgba(55,214,122,.14), transparent 34rem),
+        var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    button, select, input { font: inherit; }
+    button {
+      border: 0;
+      cursor: pointer;
+      color: var(--text);
+      background: var(--panel-2);
+      border-radius: 12px;
+      padding: .65rem .85rem;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+      transition: transform .14s ease, background .14s ease, box-shadow .14s ease;
+    }
+    button:hover { transform: translateY(-1px); background: #203052; }
+    button.active { background: linear-gradient(135deg, #1f9c61, #1978cf); box-shadow: 0 10px 30px rgba(25,120,207,.28); }
+    button.danger { background: rgba(255,92,122,.16); color: #ffd8df; }
+    button.danger:hover { background: rgba(255,92,122,.25); }
+    label { color: var(--muted); font-size: .78rem; display: grid; gap: .28rem; }
+    select, input[type="text"], input[type="number"], input[type="color"], input[type="range"] {
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      color: var(--text);
+      background: #0e1629;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.1);
+      padding: .55rem .65rem;
+    }
+    input[type="color"] { height: 2.4rem; padding: .18rem; }
+    input[type="range"] { padding: .45rem .2rem; accent-color: var(--accent); }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 330px minmax(320px, 1fr) 310px;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .panel {
+      min-height: 0;
+      overflow: auto;
+      background: linear-gradient(180deg, rgba(18,26,46,.96), rgba(12,18,33,.96));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .panel header { padding: 1rem 1rem .65rem; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .panel h1, .panel h2 { margin: 0; }
+    .panel h1 { font-size: 1.25rem; letter-spacing: -.03em; }
+    .panel h2 { font-size: .82rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .1em; }
+    .section { padding: .9rem 1rem; border-bottom: 1px solid rgba(255,255,255,.07); display: grid; gap: .8rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: .5rem; }
+    .sport-tabs { display: grid; gap: .5rem; }
+    .sport-tabs button { text-align: left; padding: .8rem; }
+    .sport-tabs small { display: block; color: var(--muted); margin-top: .18rem; }
+    .hint { color: var(--muted); font-size: .82rem; line-height: 1.42; }
+    .badge { display: inline-flex; align-items: center; gap: .35rem; background: rgba(255,255,255,.08); border-radius: 99px; padding: .22rem .5rem; font-size: .72rem; color: var(--muted); }
+
+    .stage-wrap {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: .75rem;
+    }
+    .topbar, .bottombar {
+      background: rgba(18,26,46,.88);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      padding: .75rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .8rem;
+      flex-wrap: wrap;
+    }
+    .topbar strong { letter-spacing: -.02em; }
+    .toolbar { display: flex; gap: .45rem; align-items: center; flex-wrap: wrap; }
+    .canvas-shell {
+      position: relative;
+      min-height: 0;
+      background: #07101f;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: var(--shadow), inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+    #board {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+      background: #111;
+    }
+    .floating-note {
+      position: absolute;
+      right: 1rem;
+      bottom: 1rem;
+      max-width: 280px;
+      pointer-events: none;
+      background: rgba(7,16,31,.72);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding: .75rem;
+      color: #dbe6ff;
+      font-size: .8rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .roster-list { display: grid; gap: .55rem; }
+    .player-row, .asset-row {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      gap: .5rem;
+      align-items: center;
+      padding: .48rem;
+      border-radius: 12px;
+      background: rgba(255,255,255,.045);
+    }
+    .swatch { width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); }
+    .player-row input { padding: .42rem .5rem; }
+    .pill { font-size: .74rem; color: var(--muted); }
+    .tiny { font-size: .72rem; padding: .4rem .5rem; border-radius: 9px; }
+    .templates { display: grid; gap: .45rem; }
+    .templates button { text-align: left; }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: rgba(255,255,255,.1); border-radius: 6px; padding: .08rem .28rem; color: #fff; }
+
+    @media (max-width: 1100px) {
+      body { overflow: auto; }
+      .app { height: auto; min-height: 100vh; grid-template-columns: 1fr; }
+      .canvas-shell { height: min(68vh, 720px); }
+      .panel { max-height: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <aside class="panel">
+      <header>
+        <h1>Prancheta Tática</h1>
+        <p class="hint">Basquete, futsal e handebol em um único arquivo. Arraste atletas, desenhe jogadas, salve planos e exporte imagens.</p>
+      </header>
+
+      <section class="section">
+        <h2>Modalidade</h2>
+        <div class="sport-tabs" id="sportTabs"></div>
+        <div class="grid-2">
+          <label>Visual da quadra
+            <select id="surfaceStyle">
+              <option value="classic">Clássico tático</option>
+              <option value="wood">Madeira/ginásio</option>
+              <option value="dark">Noturno</option>
+            </select>
+          </label>
+          <label>Orientação
+            <select id="orientation">
+              <option value="horizontal">Horizontal</option>
+              <option value="vertical">Vertical</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Ferramentas</h2>
+        <div class="grid-2" id="toolButtons">
+          <button data-tool="select" class="active">Mover</button>
+          <button data-tool="draw">Caneta</button>
+          <button data-tool="arrow">Seta</button>
+          <button data-tool="dash">Linha tracejada</button>
+          <button data-tool="screen">Bloqueio</button>
+          <button data-tool="cone">Cone</button>
+          <button data-tool="text">Texto</button>
+          <button data-tool="erase">Borracha</button>
+        </div>
+        <div class="grid-2">
+          <label>Cor
+            <input id="drawColor" type="color" value="#ffd166" />
+          </label>
+          <label>Espessura
+            <input id="lineWidth" type="range" min="2" max="14" value="5" />
+          </label>
+        </div>
+        <div class="grid-2">
+          <button id="undoBtn">↶ Desfazer</button>
+          <button id="redoBtn">↷ Refazer</button>
+          <button id="clearDrawings" class="danger">Limpar desenhos</button>
+          <button id="resetBoard" class="danger">Reset geral</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Camadas</h2>
+        <label><input type="checkbox" id="showZones" checked /> Zonas e marcações didáticas</label>
+        <label><input type="checkbox" id="showGrid" /> Grade de posicionamento</label>
+        <label><input type="checkbox" id="showHeat" /> Mapa de calor / ocupação</label>
+        <label><input type="checkbox" id="showNumbers" checked /> Números dos atletas</label>
+      </section>
+
+      <section class="section">
+        <h2>Biblioteca de jogadas</h2>
+        <div class="templates" id="templates"></div>
+      </section>
+    </aside>
+
+    <section class="stage-wrap">
+      <div class="topbar">
+        <div>
+          <strong id="boardTitle">Basquete · meia quadra e transição</strong><br>
+          <span class="hint" id="boardSubtitle">Use a roda do mouse para zoom e espaço para arrastar a visão.</span>
+        </div>
+        <div class="toolbar">
+          <span class="badge" id="scaleBadge">100%</span>
+          <button id="fitBtn">Enquadrar</button>
+          <button id="halfBtn">Meia quadra</button>
+          <button id="fullBtn" class="active">Quadra inteira</button>
+          <button id="pngBtn">Exportar PNG</button>
+        </div>
+      </div>
+      <div class="canvas-shell">
+        <canvas id="board" width="1600" height="1000"></canvas>
+        <div class="floating-note">
+          <b>Atalhos:</b> <span class="kbd">1</span> mover, <span class="kbd">2</span> caneta, <span class="kbd">3</span> seta, <span class="kbd">Del</span> apagar selecionado, <span class="kbd">Ctrl+Z</span> desfazer.
+        </div>
+      </div>
+      <div class="bottombar">
+        <span class="hint" id="statusText">Pronto para planejar a próxima jogada.</span>
+        <div class="toolbar">
+          <button id="saveBtn">Salvar local</button>
+          <button id="loadBtn">Carregar</button>
+          <button id="printBtn">Imprimir</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <header>
+        <h2>Elenco e objetos</h2>
+      </header>
+      <section class="section">
+        <h2>Times</h2>
+        <div class="grid-2">
+          <label>Time A
+            <input id="teamAName" type="text" value="Ataque" />
+          </label>
+          <label>Cor A
+            <input id="teamAColor" type="color" value="#2f80ff" />
+          </label>
+          <label>Time B
+            <input id="teamBName" type="text" value="Defesa" />
+          </label>
+          <label>Cor B
+            <input id="teamBColor" type="color" value="#ff4d6d" />
+          </label>
+        </div>
+      </section>
+      <section class="section">
+        <h2>Atletas</h2>
+        <div class="roster-list" id="roster"></div>
+        <div class="grid-2">
+          <button id="addPlayer">+ Atleta</button>
+          <button id="autoLineup">Formação padrão</button>
+        </div>
+      </section>
+      <section class="section">
+        <h2>Objetos rápidos</h2>
+        <div class="grid-2">
+          <button data-add="ball">Bola</button>
+          <button data-add="cone">Cone</button>
+          <button data-add="ladder">Escada</button>
+          <button data-add="goal">Mini-gol</button>
+          <button data-add="whistle">Apito</button>
+          <button data-add="timer">Cronômetro</button>
+        </div>
+      </section>
+      <section class="section">
+        <h2>Notas da sessão</h2>
+        <label>Título
+          <input id="sessionTitle" type="text" value="Treino de hoje" />
+        </label>
+        <label>Objetivo
+          <input id="sessionGoal" type="text" value="Organização, circulação e tomada de decisão" />
+        </label>
+        <p class="hint">Tudo fica salvo no navegador pelo botão “Salvar local”. Nenhum servidor é necessário.</p>
+      </section>
+    </aside>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('board');
+    const ctx = canvas.getContext('2d');
+    const sports = {
+      basketball: { name: 'Basquete', subtitle: 'transição, meia quadra, bloqueios e spacing', color: '#c9843b', players: 5, size: [28, 15], templates: ['Pick and roll central', 'Horns', 'Zona 2-3', 'Saída de fundo'] },
+      futsal: { name: 'Futsal', subtitle: 'rodízio, saída de pressão, bolas paradas e transições', color: '#168b57', players: 5, size: [40, 20], templates: ['Rodízio 3-1', 'Padrão 4-0', 'Pressão alta', 'Escanteio curto'] },
+      handball: { name: 'Handebol', subtitle: 'sistemas ofensivos, defesas 6-0/5-1 e contra-ataques', color: '#1b8c74', players: 7, size: [40, 20], templates: ['Ataque 3-3', 'Defesa 6-0', 'Defesa 5-1', 'Cruzamento armador'] }
+    };
+    const state = {
+      sport: 'basketball', tool: 'select', surface: 'classic', orientation: 'horizontal', half: false,
+      scale: 1, offsetX: 0, offsetY: 0, selected: null, dragging: null, drawing: null, history: [], future: [],
+      layers: { zones: true, grid: false, heat: false, numbers: true },
+      teams: { A: { name: 'Ataque', color: '#2f80ff' }, B: { name: 'Defesa', color: '#ff4d6d' } },
+      players: [], objects: [], lines: [], texts: []
+    };
+
+    const $ = id => document.getElementById(id);
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+    const deep = obj => JSON.parse(JSON.stringify(obj));
+    function snapshot(){ state.history.push(deep({players:state.players,objects:state.objects,lines:state.lines,texts:state.texts,teams:state.teams,sport:state.sport,half:state.half})); if(state.history.length>80) state.history.shift(); state.future=[]; }
+    function restore(s){ Object.assign(state, deep(s)); syncInputs(); draw(); }
+
+    function init(){ buildSportTabs(); bindControls(); setSport('basketball', true); resize(); window.addEventListener('resize', resize); requestAnimationFrame(draw); }
+    function buildSportTabs(){ $('sportTabs').innerHTML = Object.entries(sports).map(([key,s]) => `<button data-sport="${key}"><b>${s.name}</b><small>${s.subtitle}</small></button>`).join(''); }
+    function setSport(key, silent=false){ if(!silent) snapshot(); state.sport=key; const s=sports[key]; document.documentElement.style.setProperty('--court-fill', s.color); $('boardTitle').textContent = `${s.name} · prancheta tática completa`; $('boardSubtitle').textContent = s.subtitle; document.querySelectorAll('[data-sport]').forEach(b=>b.classList.toggle('active', b.dataset.sport===key)); buildTemplates(); defaultLineup(); draw(); }
+    function defaultLineup(){ const s=sports[state.sport], n=s.players; state.players=[]; for(let t of ['A','B']) for(let i=1;i<=n;i++){ state.players.push({id:crypto.randomUUID(), team:t, num:i, name: positionName(i), x: t==='A'? 25+i*5 : 75-i*5, y: 18+i*(64/(n+1)), color: state.teams[t].color}); } renderRoster(); }
+    function positionName(i){ return ['Armador','Ala','Pivô','Fixo','Goleiro','Meia','Ponta'][i-1] || `Atleta ${i}`; }
+    function buildTemplates(){ $('templates').innerHTML = sports[state.sport].templates.map(t=>`<button data-template="${t}">${t}<small class="pill"> adicionar setas, zonas e pontos-chave</small></button>`).join(''); }
+    function renderRoster(){ $('roster').innerHTML = state.players.map(p=>`<div class="player-row"><span class="swatch" style="background:${p.color}"></span><input value="${p.name}" data-name="${p.id}"><span class="pill">${p.team}${p.num}</span></div>`).join(''); }
+    function syncInputs(){ $('teamAName').value=state.teams.A.name; $('teamBName').value=state.teams.B.name; $('teamAColor').value=state.teams.A.color; $('teamBColor').value=state.teams.B.color; renderRoster(); }
+
+    function bindControls(){
+      document.body.addEventListener('click', e=>{
+        const sport=e.target.closest('[data-sport]'); if(sport) return setSport(sport.dataset.sport);
+        const tool=e.target.closest('[data-tool]'); if(tool) return setTool(tool.dataset.tool);
+        const add=e.target.closest('[data-add]'); if(add) return addObject(add.dataset.add);
+        const template=e.target.closest('[data-template]'); if(template) return applyTemplate(template.dataset.template);
+      });
+      $('surfaceStyle').onchange=e=>{ state.surface=e.target.value; draw(); };
+      $('orientation').onchange=e=>{ state.orientation=e.target.value; draw(); };
+      ['showZones','showGrid','showHeat','showNumbers'].forEach(id=>$(id).onchange=e=>{ const key=id.replace('show','').toLowerCase(); state.layers[key]=e.target.checked; draw(); });
+      $('teamAName').oninput=e=>state.teams.A.name=e.target.value; $('teamBName').oninput=e=>state.teams.B.name=e.target.value;
+      $('teamAColor').oninput=e=>updateTeamColor('A',e.target.value); $('teamBColor').oninput=e=>updateTeamColor('B',e.target.value);
+      $('addPlayer').onclick=()=>{ snapshot(); const n=state.players.filter(p=>p.team==='A').length+1; state.players.push({id:crypto.randomUUID(),team:'A',num:n,name:`Atleta ${n}`,x:50,y:50,color:state.teams.A.color}); renderRoster(); draw(); };
+      $('autoLineup').onclick=()=>{ snapshot(); defaultLineup(); draw(); };
+      $('clearDrawings').onclick=()=>{ snapshot(); state.lines=[]; state.texts=[]; draw(); };
+      $('resetBoard').onclick=()=>{ snapshot(); state.objects=[]; state.lines=[]; state.texts=[]; defaultLineup(); draw(); };
+      $('undoBtn').onclick=undo; $('redoBtn').onclick=redo; $('fitBtn').onclick=()=>{state.scale=1;state.offsetX=0;state.offsetY=0;draw();};
+      $('halfBtn').onclick=()=>{state.half=true; $('halfBtn').classList.add('active'); $('fullBtn').classList.remove('active'); draw();};
+      $('fullBtn').onclick=()=>{state.half=false; $('fullBtn').classList.add('active'); $('halfBtn').classList.remove('active'); draw();};
+      $('pngBtn').onclick=exportPng; $('saveBtn').onclick=()=>{localStorage.setItem('tacticalBoard',JSON.stringify(state)); status('Plano salvo no navegador.');};
+      $('loadBtn').onclick=()=>{const raw=localStorage.getItem('tacticalBoard'); if(raw){Object.assign(state,JSON.parse(raw)); syncInputs(); draw(); status('Plano carregado.');}};
+      $('printBtn').onclick=()=>window.print();
+      document.addEventListener('input', e=>{ if(e.target.dataset.name){ const p=state.players.find(x=>x.id===e.target.dataset.name); if(p){p.name=e.target.value; draw();}} });
+      window.addEventListener('keydown', hotkeys);
+      canvas.addEventListener('pointerdown', pointerDown); canvas.addEventListener('pointermove', pointerMove); canvas.addEventListener('pointerup', pointerUp); canvas.addEventListener('wheel', wheel, {passive:false});
+    }
+    function setTool(t){ state.tool=t; document.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('active',b.dataset.tool===t)); status(`Ferramenta: ${t}`); }
+    function updateTeamColor(team,color){ snapshot(); state.teams[team].color=color; state.players.filter(p=>p.team===team).forEach(p=>p.color=color); renderRoster(); draw(); }
+    function addObject(type){ snapshot(); state.objects.push({id:crypto.randomUUID(),type,x:50,y:50,rot:0,color:$('drawColor').value}); draw(); }
+    function applyTemplate(name){ snapshot(); const colors=['#ffd166','#ffffff','#7cf7ff']; state.lines.push({type:'arrow',color:colors[0],width:6,points:[{x:24,y:50},{x:44,y:36},{x:62,y:50}]}); state.lines.push({type:'dash',color:colors[1],width:4,points:[{x:70,y:28},{x:55,y:45},{x:70,y:68}]}); state.texts.push({id:crypto.randomUUID(),x:50,y:10,text:name,color:'#fff'}); status(`Modelo aplicado: ${name}`); draw(); }
+    function undo(){ const last=state.history.pop(); if(last){state.future.push(deep({players:state.players,objects:state.objects,lines:state.lines,texts:state.texts,teams:state.teams,sport:state.sport,half:state.half})); restore(last);} }
+    function redo(){ const next=state.future.pop(); if(next){snapshot(); restore(next);} }
+
+    function resize(){ const rect=canvas.parentElement.getBoundingClientRect(); canvas.width=Math.max(900,rect.width*devicePixelRatio); canvas.height=Math.max(560,rect.height*devicePixelRatio); draw(); }
+    function fieldRect(){ const pad=55*devicePixelRatio, w=canvas.width-pad*2, h=canvas.height-pad*2; const target=state.orientation==='horizontal'?[100,62]:[62,100]; const ratio=target[0]/target[1]; let fw=w, fh=w/ratio; if(fh>h){fh=h;fw=h*ratio;} return {x:(canvas.width-fw)/2+state.offsetX,y:(canvas.height-fh)/2+state.offsetY,w:fw*state.scale,h:fh*state.scale}; }
+    function toCanvas(p){ const r=fieldRect(); return {x:r.x+p.x/100*r.w, y:r.y+p.y/100*r.h}; }
+    function fromCanvas(x,y){ const r=fieldRect(); return {x:clamp((x-r.x)/r.w*100,0,100), y:clamp((y-r.y)/r.h*100,0,100)}; }
+    function pointer(e){ const rect=canvas.getBoundingClientRect(); return {x:(e.clientX-rect.left)*devicePixelRatio,y:(e.clientY-rect.top)*devicePixelRatio}; }
+
+    function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawCourt(); if(state.layers.heat) drawHeat(); state.lines.forEach(drawLine); state.texts.forEach(drawText); state.objects.forEach(drawObject); state.players.forEach(drawPlayer); $('scaleBadge').textContent=Math.round(state.scale*100)+'%'; }
+    function drawCourt(){ const r=fieldRect(); const wood=state.surface==='wood'; ctx.fillStyle=state.surface==='dark'?'#142037':(wood?'#bd7a3f':getComputedStyle(document.documentElement).getPropertyValue('--court-fill')); roundRect(r.x,r.y,r.w,r.h,22*devicePixelRatio,true); if(wood){ for(let i=0;i<12;i++){ctx.fillStyle=i%2?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)';ctx.fillRect(r.x+i*r.w/12,r.y,r.w/12,r.h);} } ctx.strokeStyle='rgba(255,255,255,.88)'; ctx.lineWidth=4*devicePixelRatio; ctx.strokeRect(r.x,r.y,r.w,r.h); if(state.layers.grid) drawGrid(r); if(state.layers.zones) drawZones(r); drawSportLines(r); }
+    function drawGrid(r){ ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=1; for(let i=10;i<100;i+=10){ const a=toCanvas({x:i,y:0}), b=toCanvas({x:i,y:100}), c=toCanvas({x:0,y:i}), d=toCanvas({x:100,y:i}); line(a,b); line(c,d);} }
+    function drawZones(r){ ctx.fillStyle='rgba(255,255,255,.055)'; for(let i=0;i<3;i++) ctx.fillRect(r.x+i*r.w/3,r.y,r.w/3,r.h); }
+    function drawSportLines(r){ const s=state.sport; ctx.strokeStyle='rgba(255,255,255,.78)'; ctx.lineWidth=3*devicePixelRatio; line(toCanvas({x:50,y:0}),toCanvas({x:50,y:100})); circle(50,50,8,false); if(s==='basketball'){ circle(15,50,12,false); circle(85,50,12,false); rectPct(0,32,18,36); rectPct(82,32,18,36); arcPct(7,50,23,-70,70); arcPct(93,50,23,110,250); } else { rectPct(0,25,15,50); rectPct(85,25,15,50); arcPct(0,50,30,-62,62); arcPct(100,50,30,118,242); rectPct(0,40,3,20); rectPct(97,40,3,20); } }
+    function drawHeat(){ for(const p of state.players){ const c=toCanvas(p); const g=ctx.createRadialGradient(c.x,c.y,5,c.x,c.y,95*devicePixelRatio); g.addColorStop(0,p.team==='A'?'rgba(47,128,255,.28)':'rgba(255,77,109,.28)'); g.addColorStop(1,'transparent'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(c.x,c.y,95*devicePixelRatio,0,Math.PI*2); ctx.fill(); } }
+    function drawLine(l){ ctx.save(); ctx.strokeStyle=l.color; ctx.fillStyle=l.color; ctx.lineWidth=l.width*devicePixelRatio; ctx.lineCap='round'; ctx.lineJoin='round'; if(l.type==='dash') ctx.setLineDash([14*devicePixelRatio,12*devicePixelRatio]); ctx.beginPath(); l.points.forEach((p,i)=>{const c=toCanvas(p); i?ctx.lineTo(c.x,c.y):ctx.moveTo(c.x,c.y)}); ctx.stroke(); if(l.type==='arrow') arrowHead(l.points.at(-2),l.points.at(-1),l.color); if(l.type==='screen'){ const p=toCanvas(l.points.at(-1)); ctx.fillRect(p.x-16,p.y-16,32,32); } ctx.restore(); }
+    function drawText(t){ const p=toCanvas(t); ctx.fillStyle=t.color; ctx.font=`${22*devicePixelRatio}px Inter, sans-serif`; ctx.textAlign='center'; ctx.fillText(t.text,p.x,p.y); }
+    function drawPlayer(p){ const c=toCanvas(p), rad=17*devicePixelRatio; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(c.x,c.y,rad,0,Math.PI*2); ctx.fill(); ctx.strokeStyle=p.id===state.selected?'#fff':'rgba(255,255,255,.75)'; ctx.lineWidth=(p.id===state.selected?5:2)*devicePixelRatio; ctx.stroke(); ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font=`700 ${state.layers.numbers?15:10}px Inter`; ctx.fillText(state.layers.numbers?p.num:p.team,c.x,c.y); ctx.font=`${11*devicePixelRatio}px Inter`; ctx.fillText(p.name,c.x,c.y+31*devicePixelRatio); }
+    function drawObject(o){ const c=toCanvas(o); ctx.save(); ctx.translate(c.x,c.y); ctx.fillStyle=o.color||'#ffd166'; ctx.strokeStyle='#fff'; ctx.lineWidth=2*devicePixelRatio; const z=devicePixelRatio; if(o.type==='ball'){ctx.beginPath();ctx.arc(0,0,13*z,0,7);ctx.fill();ctx.stroke();} else if(o.type==='cone'||o.type==='ladder'){ctx.beginPath();ctx.moveTo(0,-16*z);ctx.lineTo(16*z,16*z);ctx.lineTo(-16*z,16*z);ctx.closePath();ctx.fill();ctx.stroke();} else {ctx.strokeRect(-18*z,-12*z,36*z,24*z);ctx.fillText(o.type,0,4*z);} ctx.restore(); }
+
+    function pointerDown(e){ const p=pointer(e), pct=fromCanvas(p.x,p.y); if(state.tool==='select'){ const hit=hitTest(pct); if(hit){state.selected=hit.id; state.dragging={id:hit.id, kind:hit.kind}; snapshot();} } else if(state.tool==='text'){ snapshot(); const text=prompt('Texto para a prancheta:','Nova instrução'); if(text) state.texts.push({id:crypto.randomUUID(),x:pct.x,y:pct.y,text,color:$('drawColor').value}); } else { snapshot(); state.drawing={type:state.tool,color:$('drawColor').value,width:+$('lineWidth').value,points:[pct]}; state.lines.push(state.drawing); } draw(); }
+    function pointerMove(e){ const p=pointer(e), pct=fromCanvas(p.x,p.y); if(state.dragging){ const arr=state.dragging.kind==='player'?state.players:state.objects; const item=arr.find(x=>x.id===state.dragging.id); if(item){item.x=pct.x;item.y=pct.y;draw();} } else if(state.drawing){ state.drawing.points.push(pct); draw(); } }
+    function pointerUp(){ state.dragging=null; state.drawing=null; }
+    function hitTest(pct){ for(const p of [...state.players].reverse()) if(Math.hypot(p.x-pct.x,p.y-pct.y)<4) return {kind:'player',id:p.id}; for(const o of [...state.objects].reverse()) if(Math.hypot(o.x-pct.x,o.y-pct.y)<4) return {kind:'object',id:o.id}; return null; }
+    function wheel(e){ e.preventDefault(); const delta=e.deltaY>0?-.08:.08; state.scale=clamp(state.scale+delta,.65,2.2); draw(); }
+    function hotkeys(e){ if(e.ctrlKey&&e.key.toLowerCase()==='z'){e.preventDefault();undo();} if(e.key==='1')setTool('select'); if(e.key==='2')setTool('draw'); if(e.key==='3')setTool('arrow'); if(e.key==='Delete'&&state.selected){ snapshot(); state.players=state.players.filter(p=>p.id!==state.selected); state.objects=state.objects.filter(o=>o.id!==state.selected); state.selected=null; renderRoster(); draw(); } }
+    function exportPng(){ const a=document.createElement('a'); a.download=`prancheta-${state.sport}.png`; a.href=canvas.toDataURL('image/png'); a.click(); }
+    function status(msg){ $('statusText').textContent=msg; }
+    function roundRect(x,y,w,h,r,fill){ ctx.beginPath(); ctx.roundRect(x,y,w,h,r); fill?ctx.fill():ctx.stroke(); }
+    function line(a,b){ ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
+    function circle(x,y,r,fill){ const c=toCanvas({x,y}); ctx.beginPath(); ctx.arc(c.x,c.y,r/100*fieldRect().w,0,Math.PI*2); fill?ctx.fill():ctx.stroke(); }
+    function rectPct(x,y,w,h){ const a=toCanvas({x,y}), b=toCanvas({x:x+w,y:y+h}); ctx.strokeRect(a.x,a.y,b.x-a.x,b.y-a.y); }
+    function arcPct(x,y,r,a1,a2){ const c=toCanvas({x,y}); ctx.beginPath(); ctx.arc(c.x,c.y,r/100*fieldRect().w,a1*Math.PI/180,a2*Math.PI/180); ctx.stroke(); }
+    function arrowHead(a,b,color){ if(!a||!b)return; const p1=toCanvas(a), p2=toCanvas(b), ang=Math.atan2(p2.y-p1.y,p2.x-p1.x), s=16*devicePixelRatio; ctx.fillStyle=color; ctx.beginPath(); ctx.moveTo(p2.x,p2.y); ctx.lineTo(p2.x-s*Math.cos(ang-.5),p2.y-s*Math.sin(ang-.5)); ctx.lineTo(p2.x-s*Math.cos(ang+.5),p2.y-s*Math.sin(ang+.5)); ctx.closePath(); ctx.fill(); }
+    init();
+  </script>
+</body>
+</html>
