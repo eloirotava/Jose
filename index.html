@@ -3,27 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Prancheta Tática Multiesporte</title>
+  <title>Pomardefesa: Frutas contra Insetos</title>
   <style>
     :root {
       color-scheme: dark;
-      --bg: #0b1020;
-      --panel: #121a2e;
-      --panel-2: #17213a;
-      --line: rgba(255,255,255,.82);
-      --muted-line: rgba(255,255,255,.32);
-      --accent: #37d67a;
-      --accent-2: #46a7ff;
-      --danger: #ff5c7a;
-      --warning: #ffd166;
-      --text: #f5f7fb;
-      --muted: #aab7d4;
-      --shadow: 0 24px 70px rgba(0,0,0,.35);
-      --radius: 18px;
-      --court-fill: #1f8d58;
-      --court-alt: #2f9b67;
-      --wood: #bc7a3d;
-      --wood-alt: #d49452;
+      --bg: #07120d;
+      --panel: rgba(13, 31, 21, .92);
+      --panel-2: rgba(24, 52, 35, .96);
+      --line: rgba(255,255,255,.12);
+      --text: #f7fff5;
+      --muted: #b7cbb4;
+      --leaf: #45d270;
+      --leaf-dark: #1f8d4f;
+      --gold: #ffd166;
+      --red: #ff5a6d;
+      --blue: #5ec8ff;
+      --soil: #6b4328;
+      --soil-2: #8a5b33;
+      --shadow: 0 24px 70px rgba(0,0,0,.42);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
@@ -31,145 +28,109 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        radial-gradient(circle at top left, rgba(70,167,255,.25), transparent 34rem),
-        radial-gradient(circle at bottom right, rgba(55,214,122,.14), transparent 34rem),
-        var(--bg);
-      color: var(--text);
       overflow: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 8%, rgba(69,210,112,.22), transparent 28rem),
+        radial-gradient(circle at 85% 20%, rgba(255,209,102,.16), transparent 25rem),
+        radial-gradient(circle at 50% 120%, rgba(94,200,255,.12), transparent 30rem),
+        var(--bg);
     }
 
-    button, select, input { font: inherit; }
+    button, select { font: inherit; }
     button {
       border: 0;
       cursor: pointer;
+      border-radius: 14px;
+      padding: .72rem .9rem;
       color: var(--text);
-      background: var(--panel-2);
-      border-radius: 12px;
-      padding: .65rem .85rem;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
-      transition: transform .14s ease, background .14s ease, box-shadow .14s ease;
+      background: linear-gradient(180deg, rgba(48,92,62,.96), rgba(28,61,40,.96));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.1), 0 10px 26px rgba(0,0,0,.18);
+      transition: transform .14s ease, filter .14s ease, box-shadow .14s ease;
     }
-    button:hover { transform: translateY(-1px); background: #203052; }
-    button.active { background: linear-gradient(135deg, #1f9c61, #1978cf); box-shadow: 0 10px 30px rgba(25,120,207,.28); }
-    button.danger { background: rgba(255,92,122,.16); color: #ffd8df; }
-    button.danger:hover { background: rgba(255,92,122,.25); }
-    label { color: var(--muted); font-size: .78rem; display: grid; gap: .28rem; }
-    select, input[type="text"], input[type="number"], input[type="color"], input[type="range"] {
-      width: 100%;
-      border: 0;
-      border-radius: 10px;
-      color: var(--text);
-      background: #0e1629;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.1);
-      padding: .55rem .65rem;
-    }
-    input[type="color"] { height: 2.4rem; padding: .18rem; }
-    input[type="range"] { padding: .45rem .2rem; accent-color: var(--accent); }
+    button:hover { transform: translateY(-1px); filter: brightness(1.08); }
+    button:disabled { cursor: not-allowed; opacity: .48; transform: none; }
+    button.active { background: linear-gradient(135deg, #ffb84d, #ff6f61); box-shadow: 0 12px 30px rgba(255,111,97,.28); }
+    button.danger { background: linear-gradient(180deg, rgba(178,57,76,.94), rgba(111,29,45,.94)); }
+    button.secondary { background: rgba(255,255,255,.08); }
 
     .app {
       height: 100vh;
       display: grid;
-      grid-template-columns: 330px minmax(320px, 1fr) 310px;
+      grid-template-columns: 330px minmax(460px, 1fr) 320px;
       gap: 1rem;
       padding: 1rem;
     }
-
-    .panel {
-      min-height: 0;
-      overflow: auto;
-      background: linear-gradient(180deg, rgba(18,26,46,.96), rgba(12,18,33,.96));
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: var(--radius);
+    .panel, .hud, .board-shell {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
       box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
     }
-    .panel header { padding: 1rem 1rem .65rem; border-bottom: 1px solid rgba(255,255,255,.08); }
-    .panel h1, .panel h2 { margin: 0; }
-    .panel h1 { font-size: 1.25rem; letter-spacing: -.03em; }
-    .panel h2 { font-size: .82rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .1em; }
-    .section { padding: .9rem 1rem; border-bottom: 1px solid rgba(255,255,255,.07); display: grid; gap: .8rem; }
+    .panel { overflow: auto; min-height: 0; }
+    .panel header { padding: 1rem; border-bottom: 1px solid var(--line); }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 1.45rem; letter-spacing: -.04em; }
+    h2 { font-size: .82rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+    h3 { font-size: .95rem; }
+    .hint { color: var(--muted); font-size: .86rem; line-height: 1.45; }
+    .section { padding: .95rem 1rem; display: grid; gap: .75rem; border-bottom: 1px solid var(--line); }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
     .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: .5rem; }
-    .sport-tabs { display: grid; gap: .5rem; }
-    .sport-tabs button { text-align: left; padding: .8rem; }
-    .sport-tabs small { display: block; color: var(--muted); margin-top: .18rem; }
-    .hint { color: var(--muted); font-size: .82rem; line-height: 1.42; }
-    .badge { display: inline-flex; align-items: center; gap: .35rem; background: rgba(255,255,255,.08); border-radius: 99px; padding: .22rem .5rem; font-size: .72rem; color: var(--muted); }
+    .pill { display: inline-flex; gap: .35rem; align-items: center; padding: .2rem .55rem; border-radius: 999px; background: rgba(255,255,255,.09); color: var(--muted); font-size: .75rem; }
 
-    .stage-wrap {
-      min-width: 0;
-      min-height: 0;
+    .tower-card {
       display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: .75rem;
-    }
-    .topbar, .bottombar {
-      background: rgba(18,26,46,.88);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: var(--radius);
-      padding: .75rem;
-      box-shadow: var(--shadow);
-      display: flex;
+      grid-template-columns: 44px 1fr auto;
+      gap: .7rem;
       align-items: center;
-      justify-content: space-between;
-      gap: .8rem;
-      flex-wrap: wrap;
-    }
-    .topbar strong { letter-spacing: -.02em; }
-    .toolbar { display: flex; gap: .45rem; align-items: center; flex-wrap: wrap; }
-    .canvas-shell {
-      position: relative;
-      min-height: 0;
-      background: #07101f;
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: var(--shadow), inset 0 0 0 1px rgba(255,255,255,.08);
-    }
-    #board {
       width: 100%;
-      height: 100%;
-      display: block;
-      touch-action: none;
-      background: #111;
+      text-align: left;
+      padding: .7rem;
     }
-    .floating-note {
+    .tower-card strong { display: block; }
+    .tower-card small { display: block; color: var(--muted); margin-top: .12rem; line-height: 1.25; }
+    .fruit-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px; font-size: 1.6rem; background: rgba(255,255,255,.09); }
+    .price { color: var(--gold); font-weight: 800; }
+
+    .center { min-height: 0; display: grid; grid-template-rows: auto 1fr auto; gap: .75rem; }
+    .hud { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; padding: .72rem; }
+    .stats { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .stat { min-width: 82px; padding: .52rem .7rem; border-radius: 14px; background: rgba(255,255,255,.08); }
+    .stat b { display: block; font-size: 1.08rem; }
+    .stat span { color: var(--muted); font-size: .72rem; }
+    .board-shell { position: relative; overflow: hidden; min-height: 0; }
+    #game { width: 100%; height: 100%; display: block; touch-action: none; background: #0b2414; }
+    .message {
       position: absolute;
-      right: 1rem;
-      bottom: 1rem;
-      max-width: 280px;
+      left: 50%;
+      top: 1rem;
+      transform: translateX(-50%);
+      min-width: min(560px, calc(100% - 2rem));
       pointer-events: none;
-      background: rgba(7,16,31,.72);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 14px;
-      padding: .75rem;
-      color: #dbe6ff;
-      font-size: .8rem;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 18px;
+      padding: .8rem 1rem;
+      text-align: center;
+      background: rgba(7,18,13,.72);
+      box-shadow: 0 16px 42px rgba(0,0,0,.28);
       backdrop-filter: blur(10px);
     }
+    .message b { color: var(--gold); }
+    .bottom-controls { display: flex; gap: .55rem; flex-wrap: wrap; }
 
-    .roster-list { display: grid; gap: .55rem; }
-    .player-row, .asset-row {
-      display: grid;
-      grid-template-columns: 32px 1fr auto;
-      gap: .5rem;
-      align-items: center;
-      padding: .48rem;
-      border-radius: 12px;
-      background: rgba(255,255,255,.045);
-    }
-    .swatch { width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); }
-    .player-row input { padding: .42rem .5rem; }
-    .pill { font-size: .74rem; color: var(--muted); }
-    .tiny { font-size: .72rem; padding: .4rem .5rem; border-radius: 9px; }
-    .templates { display: grid; gap: .45rem; }
-    .templates button { text-align: left; }
-    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: rgba(255,255,255,.1); border-radius: 6px; padding: .08rem .28rem; color: #fff; }
+    .log { display: grid; gap: .45rem; max-height: 230px; overflow: auto; }
+    .log p { padding: .5rem .62rem; border-radius: 12px; background: rgba(255,255,255,.055); color: #dcebd9; font-size: .8rem; }
+    .upgrade-box { display: grid; gap: .6rem; padding: .75rem; border-radius: 18px; background: rgba(255,255,255,.06); }
+    .bar { height: 10px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,.1); }
+    .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--leaf), var(--gold)); width: 0%; }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; padding: .08rem .32rem; border-radius: 6px; background: rgba(255,255,255,.12); color: #fff; }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1120px) {
       body { overflow: auto; }
       .app { height: auto; min-height: 100vh; grid-template-columns: 1fr; }
-      .canvas-shell { height: min(68vh, 720px); }
-      .panel { max-height: none; }
+      .board-shell { height: min(72vh, 720px); }
     }
   </style>
 </head>
@@ -177,250 +138,422 @@
   <main class="app">
     <aside class="panel">
       <header>
-        <h1>Prancheta Tática</h1>
-        <p class="hint">Basquete, futsal e handebol em um único arquivo. Arraste atletas, desenhe jogadas, salve planos e exporte imagens.</p>
+        <h1>🍓 Pomardefesa</h1>
+        <p class="hint">Um tower defense de frutas defendendo a horta contra ondas de insetos famintos.</p>
       </header>
 
       <section class="section">
-        <h2>Modalidade</h2>
-        <div class="sport-tabs" id="sportTabs"></div>
-        <div class="grid-2">
-          <label>Visual da quadra
-            <select id="surfaceStyle">
-              <option value="classic">Clássico tático</option>
-              <option value="wood">Madeira/ginásio</option>
-              <option value="dark">Noturno</option>
-            </select>
-          </label>
-          <label>Orientação
-            <select id="orientation">
-              <option value="horizontal">Horizontal</option>
-              <option value="vertical">Vertical</option>
-            </select>
-          </label>
-        </div>
+        <h2>Torres frutíferas</h2>
+        <div id="towerShop"></div>
+        <p class="hint">Selecione uma fruta e clique em um canteiro livre. Torres não podem bloquear a trilha dos insetos.</p>
       </section>
 
       <section class="section">
-        <h2>Ferramentas</h2>
-        <div class="grid-2" id="toolButtons">
-          <button data-tool="select" class="active">Mover</button>
-          <button data-tool="draw">Caneta</button>
-          <button data-tool="arrow">Seta</button>
-          <button data-tool="dash">Linha tracejada</button>
-          <button data-tool="screen">Bloqueio</button>
-          <button data-tool="cone">Cone</button>
-          <button data-tool="text">Texto</button>
-          <button data-tool="erase">Borracha</button>
-        </div>
+        <h2>Controles</h2>
         <div class="grid-2">
-          <label>Cor
-            <input id="drawColor" type="color" value="#ffd166" />
-          </label>
-          <label>Espessura
-            <input id="lineWidth" type="range" min="2" max="14" value="5" />
-          </label>
+          <button id="startWave">Iniciar onda</button>
+          <button id="pauseGame" class="secondary">Pausar</button>
+          <button id="speedGame">Velocidade 1×</button>
+          <button id="restartGame" class="danger">Recomeçar</button>
         </div>
-        <div class="grid-2">
-          <button id="undoBtn">↶ Desfazer</button>
-          <button id="redoBtn">↷ Refazer</button>
-          <button id="clearDrawings" class="danger">Limpar desenhos</button>
-          <button id="resetBoard" class="danger">Reset geral</button>
-        </div>
+        <p class="hint">Atalhos: <span class="kbd">1-6</span> frutas, <span class="kbd">Espaço</span> onda/pausa, <span class="kbd">Esc</span> cancelar.</p>
       </section>
 
       <section class="section">
-        <h2>Camadas</h2>
-        <label><input type="checkbox" id="showZones" checked /> Zonas e marcações didáticas</label>
-        <label><input type="checkbox" id="showGrid" /> Grade de posicionamento</label>
-        <label><input type="checkbox" id="showHeat" /> Mapa de calor / ocupação</label>
-        <label><input type="checkbox" id="showNumbers" checked /> Números dos atletas</label>
-      </section>
-
-      <section class="section">
-        <h2>Biblioteca de jogadas</h2>
-        <div class="templates" id="templates"></div>
+        <h2>Como jogar</h2>
+        <p class="hint">Maçãs disparam sementes rápidas, bananas fazem tiros curvos, uvas acertam em área, melancias batem pesado, limões desaceleram e cocos empurram insetos para trás.</p>
+        <p class="hint">Ganhe néctar ao derrotar insetos, evolua as melhores frutas e sobreviva até a onda 20 para salvar o pomar.</p>
       </section>
     </aside>
 
-    <section class="stage-wrap">
-      <div class="topbar">
-        <div>
-          <strong id="boardTitle">Basquete · meia quadra e transição</strong><br>
-          <span class="hint" id="boardSubtitle">Use a roda do mouse para zoom e espaço para arrastar a visão.</span>
+    <section class="center">
+      <div class="hud">
+        <div class="stats">
+          <div class="stat"><b id="nectar">120</b><span>Néctar</span></div>
+          <div class="stat"><b id="lives">20</b><span>Colheita</span></div>
+          <div class="stat"><b id="wave">0/20</b><span>Onda</span></div>
+          <div class="stat"><b id="bugs">0</b><span>Insetos</span></div>
+          <div class="stat"><b id="score">0</b><span>Pontos</span></div>
         </div>
-        <div class="toolbar">
-          <span class="badge" id="scaleBadge">100%</span>
-          <button id="fitBtn">Enquadrar</button>
-          <button id="halfBtn">Meia quadra</button>
-          <button id="fullBtn" class="active">Quadra inteira</button>
-          <button id="pngBtn">Exportar PNG</button>
-        </div>
+        <span class="pill" id="selectedTower">Nenhuma fruta selecionada</span>
       </div>
-      <div class="canvas-shell">
-        <canvas id="board" width="1600" height="1000"></canvas>
-        <div class="floating-note">
-          <b>Atalhos:</b> <span class="kbd">1</span> mover, <span class="kbd">2</span> caneta, <span class="kbd">3</span> seta, <span class="kbd">Del</span> apagar selecionado, <span class="kbd">Ctrl+Z</span> desfazer.
-        </div>
+
+      <div class="board-shell">
+        <canvas id="game" width="1280" height="820"></canvas>
+        <div class="message" id="message"><b>Defenda o pomar!</b> Escolha uma fruta, plante nos canteiros e inicie a primeira onda.</div>
       </div>
-      <div class="bottombar">
-        <span class="hint" id="statusText">Pronto para planejar a próxima jogada.</span>
-        <div class="toolbar">
-          <button id="saveBtn">Salvar local</button>
-          <button id="loadBtn">Carregar</button>
-          <button id="printBtn">Imprimir</button>
+
+      <div class="hud">
+        <div class="bottom-controls">
+          <button id="sellTower" class="secondary" disabled>Vender</button>
+          <button id="upgradeTower" disabled>Evoluir</button>
+          <button id="targetMode" class="secondary" disabled>Alvo: primeiro</button>
         </div>
+        <span class="hint" id="status">Passe o mouse sobre a arena para ver alcance e posição.</span>
       </div>
     </section>
 
     <aside class="panel">
-      <header>
-        <h2>Elenco e objetos</h2>
-      </header>
+      <header><h2>Comando do pomar</h2></header>
       <section class="section">
-        <h2>Times</h2>
-        <div class="grid-2">
-          <label>Time A
-            <input id="teamAName" type="text" value="Ataque" />
-          </label>
-          <label>Cor A
-            <input id="teamAColor" type="color" value="#2f80ff" />
-          </label>
-          <label>Time B
-            <input id="teamBName" type="text" value="Defesa" />
-          </label>
-          <label>Cor B
-            <input id="teamBColor" type="color" value="#ff4d6d" />
-          </label>
+        <h2>Fruta selecionada</h2>
+        <div class="upgrade-box" id="selectedInfo">
+          <p class="hint">Clique em uma torre já plantada para ver melhorias, dano, alcance e abates.</p>
         </div>
       </section>
       <section class="section">
-        <h2>Atletas</h2>
-        <div class="roster-list" id="roster"></div>
-        <div class="grid-2">
-          <button id="addPlayer">+ Atleta</button>
-          <button id="autoLineup">Formação padrão</button>
+        <h2>Próxima onda</h2>
+        <div class="upgrade-box">
+          <h3 id="nextWaveName">Pulgões exploradores</h3>
+          <p class="hint" id="nextWaveText">Insetos pequenos e rápidos testando as defesas.</p>
+          <div class="bar"><i id="waveProgress"></i></div>
         </div>
       </section>
       <section class="section">
-        <h2>Objetos rápidos</h2>
-        <div class="grid-2">
-          <button data-add="ball">Bola</button>
-          <button data-add="cone">Cone</button>
-          <button data-add="ladder">Escada</button>
-          <button data-add="goal">Mini-gol</button>
-          <button data-add="whistle">Apito</button>
-          <button data-add="timer">Cronômetro</button>
-        </div>
-      </section>
-      <section class="section">
-        <h2>Notas da sessão</h2>
-        <label>Título
-          <input id="sessionTitle" type="text" value="Treino de hoje" />
-        </label>
-        <label>Objetivo
-          <input id="sessionGoal" type="text" value="Organização, circulação e tomada de decisão" />
-        </label>
-        <p class="hint">Tudo fica salvo no navegador pelo botão “Salvar local”. Nenhum servidor é necessário.</p>
+        <h2>Registro</h2>
+        <div class="log" id="log"></div>
       </section>
     </aside>
   </main>
 
   <script>
-    const canvas = document.getElementById('board');
+    const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
-    const sports = {
-      basketball: { name: 'Basquete', subtitle: 'transição, meia quadra, bloqueios e spacing', color: '#c9843b', players: 5, size: [28, 15], templates: ['Pick and roll central', 'Horns', 'Zona 2-3', 'Saída de fundo'] },
-      futsal: { name: 'Futsal', subtitle: 'rodízio, saída de pressão, bolas paradas e transições', color: '#168b57', players: 5, size: [40, 20], templates: ['Rodízio 3-1', 'Padrão 4-0', 'Pressão alta', 'Escanteio curto'] },
-      handball: { name: 'Handebol', subtitle: 'sistemas ofensivos, defesas 6-0/5-1 e contra-ataques', color: '#1b8c74', players: 7, size: [40, 20], templates: ['Ataque 3-3', 'Defesa 6-0', 'Defesa 5-1', 'Cruzamento armador'] }
+    const shop = document.getElementById('towerShop');
+    const grid = { cols: 14, rows: 9 };
+    const path = [
+      {x:0,y:4},{x:2,y:4},{x:2,y:1},{x:5,y:1},{x:5,y:6},{x:8,y:6},{x:8,y:2},{x:11,y:2},{x:11,y:7},{x:14,y:7}
+    ];
+    const fruits = {
+      apple: { key:'1', icon:'🍎', name:'Maçã', cost:35, damage:16, range:2.35, rate:.55, speed:480, color:'#ff5a63', desc:'sementes rápidas e baratas' },
+      banana: { key:'2', icon:'🍌', name:'Banana', cost:50, damage:24, range:2.75, rate:.85, speed:420, color:'#ffd166', desc:'tiro curvo com bom alcance' },
+      grape: { key:'3', icon:'🍇', name:'Uva', cost:70, damage:18, range:2.25, rate:1.05, speed:390, splash:.85, color:'#a56eff', desc:'dano em área contra enxames' },
+      lemon: { key:'4', icon:'🍋', name:'Limão', cost:65, damage:10, range:2.55, rate:.75, speed:460, slow:.45, color:'#e8ff5c', desc:'azedo, reduz velocidade' },
+      watermelon: { key:'5', icon:'🍉', name:'Melancia', cost:95, damage:52, range:2.05, rate:1.55, speed:340, splash:.55, color:'#36d66b', desc:'pesada, forte e explosiva' },
+      coconut: { key:'6', icon:'🥥', name:'Coco', cost:85, damage:32, range:2.2, rate:1.2, speed:360, knock:.28, color:'#e9d1ad', desc:'empurra insetos para trás' }
     };
+    const bugTypes = [
+      { name:'Pulgão', icon:'🐜', hp:38, speed:.88, reward:8, color:'#7d3c2d' },
+      { name:'Mosquito', icon:'🦟', hp:30, speed:1.32, reward:9, color:'#768f9d' },
+      { name:'Besouro', icon:'🪲', hp:86, speed:.62, reward:15, color:'#246a52' },
+      { name:'Lagarta', icon:'🐛', hp:135, speed:.48, reward:20, color:'#80c342' },
+      { name:'Vespa rainha', icon:'🐝', hp:420, speed:.52, reward:65, color:'#ffd166', boss:true }
+    ];
+    const waves = Array.from({length:20}, (_,i) => ({
+      count: 9 + i * 3,
+      interval: Math.max(.28, .78 - i * .018),
+      type: i === 19 ? 4 : i > 14 ? (i % 4) : i > 9 ? (i % 3) : i > 4 ? (i % 2) : 0,
+      hpScale: 1 + i * .18,
+      speedScale: 1 + i * .025
+    }));
     const state = {
-      sport: 'basketball', tool: 'select', surface: 'classic', orientation: 'horizontal', half: false,
-      scale: 1, offsetX: 0, offsetY: 0, selected: null, dragging: null, drawing: null, history: [], future: [],
-      layers: { zones: true, grid: false, heat: false, numbers: true },
-      teams: { A: { name: 'Ataque', color: '#2f80ff' }, B: { name: 'Defesa', color: '#ff4d6d' } },
-      players: [], objects: [], lines: [], texts: []
+      nectar:120, lives:20, wave:0, score:0, running:false, paused:false, speed:1,
+      selectedFruit:null, selectedTower:null, hover:null, towers:[], bugs:[], shots:[], particles:[], spawnTimer:0, spawned:0, waveActive:false, last:0, messageTimer:0
     };
 
     const $ = id => document.getElementById(id);
-    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-    const deep = obj => JSON.parse(JSON.stringify(obj));
-    function snapshot(){ state.history.push(deep({players:state.players,objects:state.objects,lines:state.lines,texts:state.texts,teams:state.teams,sport:state.sport,half:state.half})); if(state.history.length>80) state.history.shift(); state.future=[]; }
-    function restore(s){ Object.assign(state, deep(s)); syncInputs(); draw(); }
+    const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
+    const dist = (a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+    const cellKey = (c,r)=>`${c},${r}`;
+    const pathCells = new Set();
 
-    function init(){ buildSportTabs(); bindControls(); setSport('basketball', true); resize(); window.addEventListener('resize', resize); requestAnimationFrame(draw); }
-    function buildSportTabs(){ $('sportTabs').innerHTML = Object.entries(sports).map(([key,s]) => `<button data-sport="${key}"><b>${s.name}</b><small>${s.subtitle}</small></button>`).join(''); }
-    function setSport(key, silent=false){ if(!silent) snapshot(); state.sport=key; const s=sports[key]; document.documentElement.style.setProperty('--court-fill', s.color); $('boardTitle').textContent = `${s.name} · prancheta tática completa`; $('boardSubtitle').textContent = s.subtitle; document.querySelectorAll('[data-sport]').forEach(b=>b.classList.toggle('active', b.dataset.sport===key)); buildTemplates(); defaultLineup(); draw(); }
-    function defaultLineup(){ const s=sports[state.sport], n=s.players; state.players=[]; for(let t of ['A','B']) for(let i=1;i<=n;i++){ state.players.push({id:crypto.randomUUID(), team:t, num:i, name: positionName(i), x: t==='A'? 25+i*5 : 75-i*5, y: 18+i*(64/(n+1)), color: state.teams[t].color}); } renderRoster(); }
-    function positionName(i){ return ['Armador','Ala','Pivô','Fixo','Goleiro','Meia','Ponta'][i-1] || `Atleta ${i}`; }
-    function buildTemplates(){ $('templates').innerHTML = sports[state.sport].templates.map(t=>`<button data-template="${t}">${t}<small class="pill"> adicionar setas, zonas e pontos-chave</small></button>`).join(''); }
-    function renderRoster(){ $('roster').innerHTML = state.players.map(p=>`<div class="player-row"><span class="swatch" style="background:${p.color}"></span><input value="${p.name}" data-name="${p.id}"><span class="pill">${p.team}${p.num}</span></div>`).join(''); }
-    function syncInputs(){ $('teamAName').value=state.teams.A.name; $('teamBName').value=state.teams.B.name; $('teamAColor').value=state.teams.A.color; $('teamBColor').value=state.teams.B.color; renderRoster(); }
-
-    function bindControls(){
-      document.body.addEventListener('click', e=>{
-        const sport=e.target.closest('[data-sport]'); if(sport) return setSport(sport.dataset.sport);
-        const tool=e.target.closest('[data-tool]'); if(tool) return setTool(tool.dataset.tool);
-        const add=e.target.closest('[data-add]'); if(add) return addObject(add.dataset.add);
-        const template=e.target.closest('[data-template]'); if(template) return applyTemplate(template.dataset.template);
-      });
-      $('surfaceStyle').onchange=e=>{ state.surface=e.target.value; draw(); };
-      $('orientation').onchange=e=>{ state.orientation=e.target.value; draw(); };
-      ['showZones','showGrid','showHeat','showNumbers'].forEach(id=>$(id).onchange=e=>{ const key=id.replace('show','').toLowerCase(); state.layers[key]=e.target.checked; draw(); });
-      $('teamAName').oninput=e=>state.teams.A.name=e.target.value; $('teamBName').oninput=e=>state.teams.B.name=e.target.value;
-      $('teamAColor').oninput=e=>updateTeamColor('A',e.target.value); $('teamBColor').oninput=e=>updateTeamColor('B',e.target.value);
-      $('addPlayer').onclick=()=>{ snapshot(); const n=state.players.filter(p=>p.team==='A').length+1; state.players.push({id:crypto.randomUUID(),team:'A',num:n,name:`Atleta ${n}`,x:50,y:50,color:state.teams.A.color}); renderRoster(); draw(); };
-      $('autoLineup').onclick=()=>{ snapshot(); defaultLineup(); draw(); };
-      $('clearDrawings').onclick=()=>{ snapshot(); state.lines=[]; state.texts=[]; draw(); };
-      $('resetBoard').onclick=()=>{ snapshot(); state.objects=[]; state.lines=[]; state.texts=[]; defaultLineup(); draw(); };
-      $('undoBtn').onclick=undo; $('redoBtn').onclick=redo; $('fitBtn').onclick=()=>{state.scale=1;state.offsetX=0;state.offsetY=0;draw();};
-      $('halfBtn').onclick=()=>{state.half=true; $('halfBtn').classList.add('active'); $('fullBtn').classList.remove('active'); draw();};
-      $('fullBtn').onclick=()=>{state.half=false; $('fullBtn').classList.add('active'); $('halfBtn').classList.remove('active'); draw();};
-      $('pngBtn').onclick=exportPng; $('saveBtn').onclick=()=>{localStorage.setItem('tacticalBoard',JSON.stringify(state)); status('Plano salvo no navegador.');};
-      $('loadBtn').onclick=()=>{const raw=localStorage.getItem('tacticalBoard'); if(raw){Object.assign(state,JSON.parse(raw)); syncInputs(); draw(); status('Plano carregado.');}};
-      $('printBtn').onclick=()=>window.print();
-      document.addEventListener('input', e=>{ if(e.target.dataset.name){ const p=state.players.find(x=>x.id===e.target.dataset.name); if(p){p.name=e.target.value; draw();}} });
-      window.addEventListener('keydown', hotkeys);
-      canvas.addEventListener('pointerdown', pointerDown); canvas.addEventListener('pointermove', pointerMove); canvas.addEventListener('pointerup', pointerUp); canvas.addEventListener('wheel', wheel, {passive:false});
+    function init(){
+      computePathCells();
+      buildShop();
+      bind();
+      resize();
+      updateHud();
+      updateNextWave();
+      addLog('O pomar está pronto. Plante frutas antes da primeira onda.');
+      requestAnimationFrame(loop);
     }
-    function setTool(t){ state.tool=t; document.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('active',b.dataset.tool===t)); status(`Ferramenta: ${t}`); }
-    function updateTeamColor(team,color){ snapshot(); state.teams[team].color=color; state.players.filter(p=>p.team===team).forEach(p=>p.color=color); renderRoster(); draw(); }
-    function addObject(type){ snapshot(); state.objects.push({id:crypto.randomUUID(),type,x:50,y:50,rot:0,color:$('drawColor').value}); draw(); }
-    function applyTemplate(name){ snapshot(); const colors=['#ffd166','#ffffff','#7cf7ff']; state.lines.push({type:'arrow',color:colors[0],width:6,points:[{x:24,y:50},{x:44,y:36},{x:62,y:50}]}); state.lines.push({type:'dash',color:colors[1],width:4,points:[{x:70,y:28},{x:55,y:45},{x:70,y:68}]}); state.texts.push({id:crypto.randomUUID(),x:50,y:10,text:name,color:'#fff'}); status(`Modelo aplicado: ${name}`); draw(); }
-    function undo(){ const last=state.history.pop(); if(last){state.future.push(deep({players:state.players,objects:state.objects,lines:state.lines,texts:state.texts,teams:state.teams,sport:state.sport,half:state.half})); restore(last);} }
-    function redo(){ const next=state.future.pop(); if(next){snapshot(); restore(next);} }
 
-    function resize(){ const rect=canvas.parentElement.getBoundingClientRect(); canvas.width=Math.max(900,rect.width*devicePixelRatio); canvas.height=Math.max(560,rect.height*devicePixelRatio); draw(); }
-    function fieldRect(){ const pad=55*devicePixelRatio, w=canvas.width-pad*2, h=canvas.height-pad*2; const target=state.orientation==='horizontal'?[100,62]:[62,100]; const ratio=target[0]/target[1]; let fw=w, fh=w/ratio; if(fh>h){fh=h;fw=h*ratio;} return {x:(canvas.width-fw)/2+state.offsetX,y:(canvas.height-fh)/2+state.offsetY,w:fw*state.scale,h:fh*state.scale}; }
-    function toCanvas(p){ const r=fieldRect(); return {x:r.x+p.x/100*r.w, y:r.y+p.y/100*r.h}; }
-    function fromCanvas(x,y){ const r=fieldRect(); return {x:clamp((x-r.x)/r.w*100,0,100), y:clamp((y-r.y)/r.h*100,0,100)}; }
-    function pointer(e){ const rect=canvas.getBoundingClientRect(); return {x:(e.clientX-rect.left)*devicePixelRatio,y:(e.clientY-rect.top)*devicePixelRatio}; }
+    function computePathCells(){
+      for(let i=0;i<path.length-1;i++){
+        const a=path[i], b=path[i+1], steps=Math.max(Math.abs(b.x-a.x),Math.abs(b.y-a.y))*8;
+        for(let s=0;s<=steps;s++){
+          const t=s/steps, x=Math.round(a.x+(b.x-a.x)*t), y=Math.round(a.y+(b.y-a.y)*t);
+          if(x>=0&&x<grid.cols&&y>=0&&y<grid.rows) pathCells.add(cellKey(x,y));
+        }
+      }
+    }
 
-    function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawCourt(); if(state.layers.heat) drawHeat(); state.lines.forEach(drawLine); state.texts.forEach(drawText); state.objects.forEach(drawObject); state.players.forEach(drawPlayer); $('scaleBadge').textContent=Math.round(state.scale*100)+'%'; }
-    function drawCourt(){ const r=fieldRect(); const wood=state.surface==='wood'; ctx.fillStyle=state.surface==='dark'?'#142037':(wood?'#bd7a3f':getComputedStyle(document.documentElement).getPropertyValue('--court-fill')); roundRect(r.x,r.y,r.w,r.h,22*devicePixelRatio,true); if(wood){ for(let i=0;i<12;i++){ctx.fillStyle=i%2?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)';ctx.fillRect(r.x+i*r.w/12,r.y,r.w/12,r.h);} } ctx.strokeStyle='rgba(255,255,255,.88)'; ctx.lineWidth=4*devicePixelRatio; ctx.strokeRect(r.x,r.y,r.w,r.h); if(state.layers.grid) drawGrid(r); if(state.layers.zones) drawZones(r); drawSportLines(r); }
-    function drawGrid(r){ ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=1; for(let i=10;i<100;i+=10){ const a=toCanvas({x:i,y:0}), b=toCanvas({x:i,y:100}), c=toCanvas({x:0,y:i}), d=toCanvas({x:100,y:i}); line(a,b); line(c,d);} }
-    function drawZones(r){ ctx.fillStyle='rgba(255,255,255,.055)'; for(let i=0;i<3;i++) ctx.fillRect(r.x+i*r.w/3,r.y,r.w/3,r.h); }
-    function drawSportLines(r){ const s=state.sport; ctx.strokeStyle='rgba(255,255,255,.78)'; ctx.lineWidth=3*devicePixelRatio; line(toCanvas({x:50,y:0}),toCanvas({x:50,y:100})); circle(50,50,8,false); if(s==='basketball'){ circle(15,50,12,false); circle(85,50,12,false); rectPct(0,32,18,36); rectPct(82,32,18,36); arcPct(7,50,23,-70,70); arcPct(93,50,23,110,250); } else { rectPct(0,25,15,50); rectPct(85,25,15,50); arcPct(0,50,30,-62,62); arcPct(100,50,30,118,242); rectPct(0,40,3,20); rectPct(97,40,3,20); } }
-    function drawHeat(){ for(const p of state.players){ const c=toCanvas(p); const g=ctx.createRadialGradient(c.x,c.y,5,c.x,c.y,95*devicePixelRatio); g.addColorStop(0,p.team==='A'?'rgba(47,128,255,.28)':'rgba(255,77,109,.28)'); g.addColorStop(1,'transparent'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(c.x,c.y,95*devicePixelRatio,0,Math.PI*2); ctx.fill(); } }
-    function drawLine(l){ ctx.save(); ctx.strokeStyle=l.color; ctx.fillStyle=l.color; ctx.lineWidth=l.width*devicePixelRatio; ctx.lineCap='round'; ctx.lineJoin='round'; if(l.type==='dash') ctx.setLineDash([14*devicePixelRatio,12*devicePixelRatio]); ctx.beginPath(); l.points.forEach((p,i)=>{const c=toCanvas(p); i?ctx.lineTo(c.x,c.y):ctx.moveTo(c.x,c.y)}); ctx.stroke(); if(l.type==='arrow') arrowHead(l.points.at(-2),l.points.at(-1),l.color); if(l.type==='screen'){ const p=toCanvas(l.points.at(-1)); ctx.fillRect(p.x-16,p.y-16,32,32); } ctx.restore(); }
-    function drawText(t){ const p=toCanvas(t); ctx.fillStyle=t.color; ctx.font=`${22*devicePixelRatio}px Inter, sans-serif`; ctx.textAlign='center'; ctx.fillText(t.text,p.x,p.y); }
-    function drawPlayer(p){ const c=toCanvas(p), rad=17*devicePixelRatio; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(c.x,c.y,rad,0,Math.PI*2); ctx.fill(); ctx.strokeStyle=p.id===state.selected?'#fff':'rgba(255,255,255,.75)'; ctx.lineWidth=(p.id===state.selected?5:2)*devicePixelRatio; ctx.stroke(); ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font=`700 ${state.layers.numbers?15:10}px Inter`; ctx.fillText(state.layers.numbers?p.num:p.team,c.x,c.y); ctx.font=`${11*devicePixelRatio}px Inter`; ctx.fillText(p.name,c.x,c.y+31*devicePixelRatio); }
-    function drawObject(o){ const c=toCanvas(o); ctx.save(); ctx.translate(c.x,c.y); ctx.fillStyle=o.color||'#ffd166'; ctx.strokeStyle='#fff'; ctx.lineWidth=2*devicePixelRatio; const z=devicePixelRatio; if(o.type==='ball'){ctx.beginPath();ctx.arc(0,0,13*z,0,7);ctx.fill();ctx.stroke();} else if(o.type==='cone'||o.type==='ladder'){ctx.beginPath();ctx.moveTo(0,-16*z);ctx.lineTo(16*z,16*z);ctx.lineTo(-16*z,16*z);ctx.closePath();ctx.fill();ctx.stroke();} else {ctx.strokeRect(-18*z,-12*z,36*z,24*z);ctx.fillText(o.type,0,4*z);} ctx.restore(); }
+    function buildShop(){
+      shop.innerHTML = Object.entries(fruits).map(([id,f]) => `<button class="tower-card" data-fruit="${id}"><span class="fruit-icon">${f.icon}</span><span><strong>${f.key}. ${f.name}</strong><small>${f.desc}</small></span><span class="price">${f.cost}</span></button>`).join('');
+    }
 
-    function pointerDown(e){ const p=pointer(e), pct=fromCanvas(p.x,p.y); if(state.tool==='select'){ const hit=hitTest(pct); if(hit){state.selected=hit.id; state.dragging={id:hit.id, kind:hit.kind}; snapshot();} } else if(state.tool==='text'){ snapshot(); const text=prompt('Texto para a prancheta:','Nova instrução'); if(text) state.texts.push({id:crypto.randomUUID(),x:pct.x,y:pct.y,text,color:$('drawColor').value}); } else { snapshot(); state.drawing={type:state.tool,color:$('drawColor').value,width:+$('lineWidth').value,points:[pct]}; state.lines.push(state.drawing); } draw(); }
-    function pointerMove(e){ const p=pointer(e), pct=fromCanvas(p.x,p.y); if(state.dragging){ const arr=state.dragging.kind==='player'?state.players:state.objects; const item=arr.find(x=>x.id===state.dragging.id); if(item){item.x=pct.x;item.y=pct.y;draw();} } else if(state.drawing){ state.drawing.points.push(pct); draw(); } }
-    function pointerUp(){ state.dragging=null; state.drawing=null; }
-    function hitTest(pct){ for(const p of [...state.players].reverse()) if(Math.hypot(p.x-pct.x,p.y-pct.y)<4) return {kind:'player',id:p.id}; for(const o of [...state.objects].reverse()) if(Math.hypot(o.x-pct.x,o.y-pct.y)<4) return {kind:'object',id:o.id}; return null; }
-    function wheel(e){ e.preventDefault(); const delta=e.deltaY>0?-.08:.08; state.scale=clamp(state.scale+delta,.65,2.2); draw(); }
-    function hotkeys(e){ if(e.ctrlKey&&e.key.toLowerCase()==='z'){e.preventDefault();undo();} if(e.key==='1')setTool('select'); if(e.key==='2')setTool('draw'); if(e.key==='3')setTool('arrow'); if(e.key==='Delete'&&state.selected){ snapshot(); state.players=state.players.filter(p=>p.id!==state.selected); state.objects=state.objects.filter(o=>o.id!==state.selected); state.selected=null; renderRoster(); draw(); } }
-    function exportPng(){ const a=document.createElement('a'); a.download=`prancheta-${state.sport}.png`; a.href=canvas.toDataURL('image/png'); a.click(); }
-    function status(msg){ $('statusText').textContent=msg; }
+    function bind(){
+      document.body.addEventListener('click', e=>{
+        const fruit = e.target.closest('[data-fruit]');
+        if(fruit) selectFruit(fruit.dataset.fruit);
+      });
+      $('startWave').onclick = startWave;
+      $('pauseGame').onclick = togglePause;
+      $('speedGame').onclick = toggleSpeed;
+      $('restartGame').onclick = restart;
+      $('sellTower').onclick = sellSelected;
+      $('upgradeTower').onclick = upgradeSelected;
+      $('targetMode').onclick = cycleTargetMode;
+      canvas.addEventListener('pointermove', pointerMove);
+      canvas.addEventListener('pointerleave', ()=>{state.hover=null; updateStatus();});
+      canvas.addEventListener('pointerdown', pointerDown);
+      window.addEventListener('resize', resize);
+      window.addEventListener('keydown', hotkeys);
+    }
+
+    function resize(){
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = Math.max(900, rect.width * devicePixelRatio);
+      canvas.height = Math.max(580, rect.height * devicePixelRatio);
+      draw();
+    }
+
+    function cellSize(){ return Math.min(canvas.width/(grid.cols+1.2), canvas.height/(grid.rows+1.2)); }
+    function boardOrigin(){ const s=cellSize(); return {x:(canvas.width-grid.cols*s)/2, y:(canvas.height-grid.rows*s)/2, s}; }
+    function cellCenter(c,r){ const o=boardOrigin(); return {x:o.x+(c+.5)*o.s, y:o.y+(r+.5)*o.s}; }
+    function cellFromPointer(e){ const rect=canvas.getBoundingClientRect(), o=boardOrigin(); const x=(e.clientX-rect.left)*devicePixelRatio, y=(e.clientY-rect.top)*devicePixelRatio; return {c:Math.floor((x-o.x)/o.s), r:Math.floor((y-o.y)/o.s), px:x, py:y}; }
+    function worldCell(pos){ const o=boardOrigin(); return {x:o.x+pos.x*o.s, y:o.y+pos.y*o.s}; }
+
+    function selectFruit(id){
+      state.selectedFruit = id;
+      state.selectedTower = null;
+      document.querySelectorAll('[data-fruit]').forEach(b=>b.classList.toggle('active', b.dataset.fruit===id));
+      $('selectedTower').textContent = `${fruits[id].icon} ${fruits[id].name} selecionada · ${fruits[id].cost} néctar`;
+      updateSelectedInfo();
+      draw();
+    }
+
+    function pointerMove(e){
+      const p=cellFromPointer(e);
+      state.hover = p.c>=0&&p.c<grid.cols&&p.r>=0&&p.r<grid.rows ? p : null;
+      updateStatus();
+      draw();
+    }
+
+    function pointerDown(e){
+      const p=cellFromPointer(e);
+      if(p.c<0||p.c>=grid.cols||p.r<0||p.r>=grid.rows) return;
+      const tower = towerAt(p.c,p.r);
+      if(tower){ selectTower(tower); return; }
+      if(state.selectedFruit) plantTower(p.c,p.r,state.selectedFruit);
+    }
+
+    function plantTower(c,r,type){
+      const f=fruits[type];
+      if(pathCells.has(cellKey(c,r))) return showMessage('A trilha dos insetos precisa ficar livre.');
+      if(towerAt(c,r)) return showMessage('Já existe uma fruta nesse canteiro.');
+      if(state.nectar < f.cost) return showMessage('Néctar insuficiente para plantar essa fruta.');
+      state.nectar -= f.cost;
+      const tower = { id:crypto.randomUUID(), type, c, r, level:1, cooldown:0, kills:0, target:'first' };
+      state.towers.push(tower);
+      selectTower(tower);
+      addLog(`${f.icon} ${f.name} plantada no canteiro ${c+1}-${r+1}.`);
+      updateHud();
+      draw();
+    }
+
+    function towerAt(c,r){ return state.towers.find(t=>t.c===c&&t.r===r); }
+    function selectTower(tower){
+      state.selectedTower = tower.id;
+      state.selectedFruit = null;
+      document.querySelectorAll('[data-fruit]').forEach(b=>b.classList.remove('active'));
+      const f=fruits[tower.type];
+      $('selectedTower').textContent = `${f.icon} ${f.name} nível ${tower.level}`;
+      updateSelectedInfo();
+      draw();
+    }
+
+    function selectedTower(){ return state.towers.find(t=>t.id===state.selectedTower); }
+    function towerStats(t){ const f=fruits[t.type], mult=1+(t.level-1)*.38; return {...f, damage:f.damage*mult, range:f.range+(t.level-1)*.22, rate:Math.max(.22,f.rate*(1-(t.level-1)*.08)), upgrade:Math.round(f.cost*(.72+t.level*.55))}; }
+
+    function updateSelectedInfo(){
+      const t=selectedTower();
+      if(!t){
+        const f=state.selectedFruit && fruits[state.selectedFruit];
+        $('selectedInfo').innerHTML = f ? `<h3>${f.icon} ${f.name}</h3><p class="hint">${f.desc}. Custa <b>${f.cost}</b> néctar.</p><p class="hint">Dano ${f.damage}, alcance ${f.range.toFixed(1)}, recarga ${f.rate.toFixed(2)}s.</p>` : '<p class="hint">Clique em uma torre já plantada para ver melhorias, dano, alcance e abates.</p>';
+        $('sellTower').disabled = true; $('upgradeTower').disabled = true; $('targetMode').disabled = true;
+        return;
+      }
+      const s=towerStats(t), refund=Math.round(fruits[t.type].cost*.55*t.level);
+      $('selectedInfo').innerHTML = `<h3>${s.icon} ${s.name} · nível ${t.level}</h3><p class="hint">Abates: <b>${t.kills}</b> · Modo de alvo: <b>${t.target}</b></p><p class="hint">Dano ${Math.round(s.damage)} · Alcance ${s.range.toFixed(1)} · Recarga ${s.rate.toFixed(2)}s</p><p class="hint">Evoluir: <b>${s.upgrade}</b> néctar · Vender: <b>${refund}</b></p>`;
+      $('sellTower').disabled = false; $('upgradeTower').disabled = state.nectar < s.upgrade; $('targetMode').disabled = false; $('targetMode').textContent = `Alvo: ${t.target}`;
+    }
+
+    function sellSelected(){
+      const t=selectedTower(); if(!t) return;
+      state.nectar += Math.round(fruits[t.type].cost*.55*t.level);
+      state.towers = state.towers.filter(x=>x.id!==t.id);
+      state.selectedTower = null;
+      updateHud(); updateSelectedInfo(); draw(); addLog('Torre vendida para recuperar néctar.');
+    }
+
+    function upgradeSelected(){
+      const t=selectedTower(); if(!t) return;
+      const s=towerStats(t); if(state.nectar < s.upgrade) return;
+      state.nectar -= s.upgrade; t.level++;
+      burst(cellCenter(t.c,t.r), fruits[t.type].color, 18);
+      updateHud(); updateSelectedInfo(); draw(); addLog(`${fruits[t.type].icon} ${fruits[t.type].name} evoluiu para nível ${t.level}.`);
+    }
+
+    function cycleTargetMode(){
+      const t=selectedTower(); if(!t) return;
+      const modes=['first','strong','fast','last'];
+      t.target = modes[(modes.indexOf(t.target)+1)%modes.length];
+      updateSelectedInfo();
+    }
+
+    function startWave(){
+      if(state.paused){ togglePause(); return; }
+      if(state.waveActive) return;
+      if(state.wave >= waves.length) return restart();
+      state.waveActive = true; state.spawned = 0; state.spawnTimer = .2; state.wave++;
+      state.running = true;
+      showMessage(`Onda ${state.wave}: ${waveName(state.wave-1)}`);
+      addLog(`Onda ${state.wave} começou: ${waveName(state.wave-1)}.`);
+      updateHud(); updateNextWave();
+    }
+
+    function togglePause(){ state.paused=!state.paused; $('pauseGame').textContent=state.paused?'Continuar':'Pausar'; showMessage(state.paused?'Jogo pausado.':'Jogo retomado.'); }
+    function toggleSpeed(){ state.speed = state.speed===1 ? 2 : state.speed===2 ? 3 : 1; $('speedGame').textContent = `Velocidade ${state.speed}×`; }
+    function restart(){ Object.assign(state,{nectar:120,lives:20,wave:0,score:0,running:false,paused:false,speed:1,selectedFruit:null,selectedTower:null,hover:null,towers:[],bugs:[],shots:[],particles:[],spawnTimer:0,spawned:0,waveActive:false}); document.querySelectorAll('[data-fruit]').forEach(b=>b.classList.remove('active')); $('pauseGame').textContent='Pausar'; $('speedGame').textContent='Velocidade 1×'; showMessage('Novo pomar, nova chance. Plante suas frutas!'); addLog('Partida reiniciada.'); updateHud(); updateSelectedInfo(); updateNextWave(); draw(); }
+
+    function loop(ts){
+      const dt = Math.min(.05, ((ts-state.last)||16)/1000) * state.speed;
+      state.last = ts;
+      if(!state.paused && state.running){ update(dt); }
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    function update(dt){
+      if(state.waveActive) spawn(dt);
+      state.bugs.forEach(b=>updateBug(b,dt));
+      state.towers.forEach(t=>updateTower(t,dt));
+      state.shots.forEach(s=>updateShot(s,dt));
+      state.particles.forEach(p=>{p.life-=dt; p.x+=p.vx*dt; p.y+=p.vy*dt;});
+      state.bugs = state.bugs.filter(b=>b.hp>0 && !b.done);
+      state.shots = state.shots.filter(s=>!s.done);
+      state.particles = state.particles.filter(p=>p.life>0);
+      if(state.waveActive && state.spawned>=waves[state.wave-1].count && state.bugs.length===0){ finishWave(); }
+      if(state.lives<=0){ state.running=false; state.waveActive=false; showMessage('Fim de jogo! Os insetos invadiram a colheita.'); }
+      updateHud(); updateSelectedInfo();
+    }
+
+    function spawn(dt){
+      const w=waves[state.wave-1];
+      state.spawnTimer -= dt;
+      if(state.spawned < w.count && state.spawnTimer <= 0){
+        const type = bugTypes[w.type];
+        state.bugs.push({id:crypto.randomUUID(), type:w.type, name:type.name, icon:type.icon, hp:type.hp*w.hpScale, maxHp:type.hp*w.hpScale, speed:type.speed*w.speedScale, reward:type.reward, progress:0, segment:0, x:path[0].x, y:path[0].y, slow:0, color:type.color, boss:type.boss});
+        state.spawned++; state.spawnTimer = w.interval;
+      }
+    }
+
+    function updateBug(b,dt){
+      if(b.slow>0) b.slow-=dt;
+      const move = b.speed * (b.slow>0 ? .48 : 1) * dt;
+      let remain = move;
+      while(remain>0 && b.segment<path.length-1){
+        const a=path[b.segment], c=path[b.segment+1], len=Math.hypot(c.x-a.x,c.y-a.y), left=len-b.progress;
+        if(remain<left){ b.progress += remain; remain=0; }
+        else { remain-=left; b.segment++; b.progress=0; }
+      }
+      if(b.segment>=path.length-1){ b.done=true; state.lives -= b.boss ? 4 : 1; showMessage(`${b.icon} ${b.name} chegou à colheita!`); return; }
+      const a=path[b.segment], c=path[b.segment+1], len=Math.hypot(c.x-a.x,c.y-a.y), t=b.progress/len;
+      b.x=a.x+(c.x-a.x)*t; b.y=a.y+(c.y-a.y)*t;
+    }
+
+    function updateTower(t,dt){
+      t.cooldown -= dt;
+      if(t.cooldown>0) return;
+      const s=towerStats(t), center={x:t.c+.5,y:t.r+.5};
+      const inRange=state.bugs.filter(b=>dist(center,b)<=s.range);
+      if(!inRange.length) return;
+      const target = chooseTarget(inRange,t.target);
+      t.cooldown = s.rate;
+      state.shots.push({x:center.x,y:center.y,target:target.id,type:t.type,damage:s.damage,speed:s.speed/100,splash:s.splash||0,slow:s.slow||0,knock:s.knock||0,color:s.color,icon:s.icon,owner:t.id,done:false});
+    }
+
+    function chooseTarget(list,mode){
+      const metric = b => b.segment*100 + b.progress;
+      if(mode==='strong') return list.sort((a,b)=>b.hp-a.hp)[0];
+      if(mode==='fast') return list.sort((a,b)=>b.speed-a.speed)[0];
+      if(mode==='last') return list.sort((a,b)=>metric(a)-metric(b))[0];
+      return list.sort((a,b)=>metric(b)-metric(a))[0];
+    }
+
+    function updateShot(s,dt){
+      const target=state.bugs.find(b=>b.id===s.target);
+      if(!target){ s.done=true; return; }
+      const dx=target.x+.5-s.x, dy=target.y+.5-s.y, d=Math.hypot(dx,dy), step=s.speed*dt;
+      if(d<=step){ hit(s,target); s.done=true; return; }
+      s.x += dx/d*step; s.y += dy/d*step;
+    }
+
+    function hit(s,target){
+      damageBug(target,s.damage,s.owner);
+      if(s.slow) target.slow = Math.max(target.slow, 2.2);
+      if(s.knock){ target.progress = Math.max(0, target.progress - s.knock); }
+      if(s.splash){
+        state.bugs.forEach(b=>{ if(b.id!==target.id && dist(target,b)<=s.splash) damageBug(b,s.damage*.55,s.owner); });
+      }
+      burst(worldCell({x:target.x+.5,y:target.y+.5}), s.color, s.splash?12:6);
+    }
+
+    function damageBug(b,amount,owner){
+      b.hp -= amount;
+      if(b.hp<=0 && !b.dead){
+        b.dead=true; b.done=true; state.nectar += b.reward; state.score += Math.round(b.reward*12 + b.maxHp);
+        const t=state.towers.find(x=>x.id===owner); if(t) t.kills++;
+        addLog(`${b.icon} ${b.name} derrotado. +${b.reward} néctar.`);
+      }
+    }
+
+    function finishWave(){
+      state.waveActive=false;
+      const bonus=20+state.wave*4; state.nectar+=bonus; state.score+=bonus*10;
+      if(state.wave>=waves.length){ state.running=false; showMessage('Vitória! O pomar sobreviveu a todas as ondas.'); addLog('Vitória completa: a colheita está salva!'); }
+      else { showMessage(`Onda ${state.wave} vencida! Bônus de ${bonus} néctar.`); addLog(`Onda ${state.wave} concluída. Bônus: ${bonus} néctar.`); }
+      updateNextWave();
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      drawGround(); drawPath(); drawGrid(); drawTowers(); drawBugs(); drawShots(); drawParticles(); drawHover();
+    }
+    function drawGround(){
+      const o=boardOrigin();
+      const g=ctx.createLinearGradient(0,0,0,canvas.height); g.addColorStop(0,'#174b2a'); g.addColorStop(1,'#0b2818'); ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width,canvas.height);
+      for(let r=0;r<grid.rows;r++) for(let c=0;c<grid.cols;c++){ const p=cellCenter(c,r); ctx.fillStyle=(c+r)%2?'rgba(255,255,255,.035)':'rgba(0,0,0,.06)'; roundRect(p.x-o.s*.45,p.y-o.s*.45,o.s*.9,o.s*.9,12*devicePixelRatio,true); }
+    }
+    function drawGrid(){ const o=boardOrigin(); ctx.strokeStyle='rgba(255,255,255,.08)'; ctx.lineWidth=1; for(let c=0;c<=grid.cols;c++){ line(o.x+c*o.s,o.y,o.x+c*o.s,o.y+grid.rows*o.s); } for(let r=0;r<=grid.rows;r++){ line(o.x,o.y+r*o.s,o.x+grid.cols*o.s,o.y+r*o.s); } }
+    function drawPath(){ const o=boardOrigin(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=o.s*.74; ctx.strokeStyle='#704529'; ctx.beginPath(); path.forEach((p,i)=>{ const c=worldCell({x:p.x,y:p.y}); i?ctx.lineTo(c.x,c.y):ctx.moveTo(c.x,c.y); }); ctx.stroke(); ctx.lineWidth=o.s*.52; ctx.strokeStyle='#9b693b'; ctx.stroke(); ctx.setLineDash([o.s*.28,o.s*.24]); ctx.lineWidth=3*devicePixelRatio; ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.stroke(); ctx.setLineDash([]); }
+    function drawTowers(){ const o=boardOrigin(); state.towers.forEach(t=>{ const f=fruits[t.type], p=cellCenter(t.c,t.r); if(t.id===state.selectedTower){ ctx.fillStyle='rgba(255,209,102,.16)'; ctx.beginPath(); ctx.arc(p.x,p.y,towerStats(t).range*o.s,0,Math.PI*2); ctx.fill(); } ctx.fillStyle='rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(p.x,p.y+o.s*.18,o.s*.26,o.s*.1,0,0,Math.PI*2); ctx.fill(); ctx.font=`${Math.round(o.s*.48)}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(f.icon,p.x,p.y-o.s*.04); ctx.fillStyle='rgba(0,0,0,.55)'; roundRect(p.x-o.s*.28,p.y+o.s*.22,o.s*.56,o.s*.18,999,true); ctx.fillStyle='#fff'; ctx.font=`700 ${Math.round(o.s*.12)}px sans-serif`; ctx.fillText(`Nv ${t.level}`,p.x,p.y+o.s*.31); }); }
+    function drawBugs(){ const o=boardOrigin(); state.bugs.forEach(b=>{ const p=worldCell({x:b.x+.5,y:b.y+.5}); ctx.fillStyle='rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(p.x,p.y+o.s*.16,o.s*.22,o.s*.09,0,0,Math.PI*2); ctx.fill(); ctx.font=`${Math.round(o.s*(b.boss?.56:.38))}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(b.icon,p.x,p.y); const w=o.s*.54, h=6*devicePixelRatio; ctx.fillStyle='rgba(0,0,0,.55)'; ctx.fillRect(p.x-w/2,p.y-o.s*.33,w,h); ctx.fillStyle=b.slow>0?'#5ec8ff':'#ff5a6d'; ctx.fillRect(p.x-w/2,p.y-o.s*.33,w*clamp(b.hp/b.maxHp,0,1),h); }); }
+    function drawShots(){ const o=boardOrigin(); state.shots.forEach(s=>{ const p=worldCell(s); ctx.fillStyle=s.color; ctx.beginPath(); ctx.arc(p.x,p.y,o.s*.08,0,Math.PI*2); ctx.fill(); ctx.fillStyle='rgba(255,255,255,.8)'; ctx.font=`${Math.round(o.s*.14)}px serif`; ctx.fillText(s.icon,p.x,p.y-o.s*.12); }); }
+    function drawParticles(){ state.particles.forEach(p=>{ ctx.globalAlpha=clamp(p.life/.7,0,1); ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1; }); }
+    function drawHover(){
+      if(!state.hover) return;
+      const {c,r}=state.hover, o=boardOrigin(), p=cellCenter(c,r), blocked=pathCells.has(cellKey(c,r))||towerAt(c,r), f=state.selectedFruit&&fruits[state.selectedFruit];
+      ctx.fillStyle = blocked ? 'rgba(255,90,109,.2)' : 'rgba(69,210,112,.18)';
+      ctx.strokeStyle = blocked ? '#ff5a6d' : '#45d270';
+      ctx.lineWidth=3*devicePixelRatio; roundRect(p.x-o.s*.46,p.y-o.s*.46,o.s*.92,o.s*.92,12*devicePixelRatio,true); roundRect(p.x-o.s*.46,p.y-o.s*.46,o.s*.92,o.s*.92,12*devicePixelRatio,false);
+      if(f){ ctx.fillStyle='rgba(255,255,255,.08)'; ctx.beginPath(); ctx.arc(p.x,p.y,f.range*o.s,0,Math.PI*2); ctx.fill(); }
+    }
+
+    function burst(pos,color,count){ for(let i=0;i<count;i++){ const a=Math.random()*Math.PI*2, v=40+Math.random()*130; state.particles.push({x:pos.x,y:pos.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.35+Math.random()*.45,size:(2+Math.random()*4)*devicePixelRatio,color}); } }
+    function line(x1,y1,x2,y2){ ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); }
     function roundRect(x,y,w,h,r,fill){ ctx.beginPath(); ctx.roundRect(x,y,w,h,r); fill?ctx.fill():ctx.stroke(); }
-    function line(a,b){ ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
-    function circle(x,y,r,fill){ const c=toCanvas({x,y}); ctx.beginPath(); ctx.arc(c.x,c.y,r/100*fieldRect().w,0,Math.PI*2); fill?ctx.fill():ctx.stroke(); }
-    function rectPct(x,y,w,h){ const a=toCanvas({x,y}), b=toCanvas({x:x+w,y:y+h}); ctx.strokeRect(a.x,a.y,b.x-a.x,b.y-a.y); }
-    function arcPct(x,y,r,a1,a2){ const c=toCanvas({x,y}); ctx.beginPath(); ctx.arc(c.x,c.y,r/100*fieldRect().w,a1*Math.PI/180,a2*Math.PI/180); ctx.stroke(); }
-    function arrowHead(a,b,color){ if(!a||!b)return; const p1=toCanvas(a), p2=toCanvas(b), ang=Math.atan2(p2.y-p1.y,p2.x-p1.x), s=16*devicePixelRatio; ctx.fillStyle=color; ctx.beginPath(); ctx.moveTo(p2.x,p2.y); ctx.lineTo(p2.x-s*Math.cos(ang-.5),p2.y-s*Math.sin(ang-.5)); ctx.lineTo(p2.x-s*Math.cos(ang+.5),p2.y-s*Math.sin(ang+.5)); ctx.closePath(); ctx.fill(); }
+
+    function updateHud(){ $('nectar').textContent=state.nectar; $('lives').textContent=state.lives; $('wave').textContent=`${state.wave}/20`; $('bugs').textContent=state.bugs.length + (state.waveActive ? `/${waves[state.wave-1].count-state.spawned}` : ''); $('score').textContent=state.score; }
+    function updateStatus(){ if(!state.hover) return $('status').textContent='Passe o mouse sobre a arena para ver alcance e posição.'; const blocked=pathCells.has(cellKey(state.hover.c,state.hover.r)), occupied=towerAt(state.hover.c,state.hover.r); $('status').textContent = blocked ? 'Trilha dos insetos: não pode plantar aqui.' : occupied ? 'Clique para selecionar esta torre.' : `Canteiro livre ${state.hover.c+1}-${state.hover.r+1}.`; }
+    function updateNextWave(){ const idx=Math.min(state.wave,waves.length-1); $('nextWaveName').textContent=waveName(idx); $('nextWaveText').textContent=waveText(idx); $('waveProgress').style.width = `${state.wave/waves.length*100}%`; }
+    function waveName(i){ if(i>=19) return 'Rainha Vespa e sua guarda'; const t=bugTypes[waves[i].type]; return `${t.name}s nível ${i+1}`; }
+    function waveText(i){ const w=waves[i]; return `${w.count} inimigos, vida ×${w.hpScale.toFixed(1)}, velocidade ×${w.speedScale.toFixed(1)}.`; }
+    function showMessage(text){ $('message').innerHTML = text; }
+    function addLog(text){ const p=document.createElement('p'); p.textContent=text; $('log').prepend(p); while($('log').children.length>18) $('log').lastChild.remove(); }
+    function hotkeys(e){ if(e.key>='1'&&e.key<='6'){ const id=Object.entries(fruits).find(([,f])=>f.key===e.key)?.[0]; if(id) selectFruit(id); } if(e.key==='Escape'){ state.selectedFruit=null; document.querySelectorAll('[data-fruit]').forEach(b=>b.classList.remove('active')); $('selectedTower').textContent='Nenhuma fruta selecionada'; updateSelectedInfo(); draw(); } if(e.code==='Space'){ e.preventDefault(); state.waveActive ? togglePause() : startWave(); } }
+
     init();
   </script>
 </body>
