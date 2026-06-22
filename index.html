@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jose · Experimentos</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07111f;
+      --card: rgba(18, 27, 46, .84);
+      --card-strong: rgba(27, 40, 68, .94);
+      --line: rgba(255,255,255,.13);
+      --text: #f8fbff;
+      --muted: #aebbd4;
+      --green: #46d67d;
+      --blue: #48a8ff;
+      --gold: #ffd166;
+      --red: #ff667d;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(72,168,255,.22), transparent 30rem),
+        radial-gradient(circle at 82% 22%, rgba(70,214,125,.18), transparent 28rem),
+        radial-gradient(circle at 50% 110%, rgba(255,209,102,.16), transparent 34rem),
+        var(--bg);
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+    }
+
+    main {
+      width: min(1120px, 100%);
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .hero {
+      padding: clamp(1.5rem, 4vw, 3rem);
+      border: 1px solid var(--line);
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(18,27,46,.92), rgba(10,18,32,.82));
+      box-shadow: 0 28px 90px rgba(0,0,0,.42);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -6rem -7rem auto;
+      width: 22rem;
+      height: 22rem;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(72,168,255,.28), transparent 67%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .32rem .7rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: .82rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 780px;
+      font-size: clamp(2.1rem, 5vw, 4.6rem);
+      line-height: .95;
+      letter-spacing: -.07em;
+    }
+
+    .lead {
+      margin: 1rem 0 0;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      line-height: 1.55;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      min-height: 330px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+      padding: 1.35rem;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      color: inherit;
+      text-decoration: none;
+      background: var(--card);
+      box-shadow: 0 22px 60px rgba(0,0,0,.28);
+      position: relative;
+      overflow: hidden;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,.28);
+      background: var(--card-strong);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -30% -20% auto auto;
+      width: 18rem;
+      height: 18rem;
+      border-radius: 50%;
+      opacity: .42;
+      background: var(--glow);
+      pointer-events: none;
+    }
+
+    .card .icon {
+      width: 68px;
+      height: 68px;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      background: rgba(255,255,255,.1);
+      font-size: 2.4rem;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.1);
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: clamp(1.55rem, 3vw, 2.35rem);
+      letter-spacing: -.045em;
+    }
+
+    .card p {
+      margin: .65rem 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+      margin-top: 1rem;
+    }
+
+    .tag {
+      border-radius: 999px;
+      padding: .28rem .62rem;
+      background: rgba(255,255,255,.08);
+      color: #dce7fb;
+      font-size: .78rem;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      align-self: flex-start;
+      border-radius: 999px;
+      padding: .78rem 1rem;
+      background: rgba(255,255,255,.1);
+      font-weight: 800;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+    }
+
+    footer {
+      color: var(--muted);
+      text-align: center;
+      font-size: .9rem;
+    }
+
+    @media (max-width: 980px) {
+      body { padding: 1rem; }
+      .cards { grid-template-columns: 1fr; }
+      .card { min-height: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <span class="eyebrow">🧪 Experimentos front-end · tudo roda no navegador</span>
+      <h1>Escolha o projeto que você quer abrir.</h1>
+      <p class="lead">Esta página inicial reúne os protótipos do repo: uma prancheta tática multiesporte, um tower defense de frutas combatendo insetos e um simulador de arco e flecha, um jogo de peteca, um jogo de boliche e um brawler de arena contra bots e um simulador 3D de carros.</p>
+    </section>
+
+    <section class="cards" aria-label="Projetos disponíveis">
+      <a class="card" href="prancheta.html" style="--glow: radial-gradient(circle, rgba(72,168,255,.7), transparent 64%);">
+        <div>
+          <span class="icon">🏀</span>
+          <div class="tags">
+            <span class="tag">Basquete</span>
+            <span class="tag">Futsal</span>
+            <span class="tag">Handebol</span>
+          </div>
+          <h2>Prancheta tática</h2>
+          <p>Monte formações, arraste atletas, desenhe jogadas, use camadas didáticas e exporte planos para explicar estratégias ao time.</p>
+        </div>
+        <span class="cta">Abrir prancheta →</span>
+      </a>
+
+      <a class="card" href="tower-defense.html" style="--glow: radial-gradient(circle, rgba(70,214,125,.72), transparent 64%);">
+        <div>
+          <span class="icon">🍓</span>
+          <div class="tags">
+            <span class="tag">Frutas</span>
+            <span class="tag">Insetos</span>
+            <span class="tag">Tower defense</span>
+          </div>
+          <h2>Pomardefesa</h2>
+          <p>Plante torres frutíferas, enfrente ondas de insetos, evolua defesas e proteja a colheita até a última invasão.</p>
+        </div>
+        <span class="cta">Jogar tower defense →</span>
+      </a>
+
+      <a class="card" href="archery.html" style="--glow: radial-gradient(circle, rgba(255,209,102,.72), transparent 64%);">
+        <div>
+          <span class="icon">🏹</span>
+          <div class="tags">
+            <span class="tag">Mira</span>
+            <span class="tag">Vento</span>
+            <span class="tag">Pontuação</span>
+          </div>
+          <h2>Arco & Flecha</h2>
+          <p>Puxe a corda, compense vento e gravidade, ajuste distância e tente acertar o centro do alvo.</p>
+        </div>
+        <span class="cta">Abrir simulador →</span>
+      </a>
+
+      <a class="card" href="peteca.html" style="--glow: radial-gradient(circle, rgba(88,214,141,.72), transparent 64%);">
+        <div><span class="icon">🪶</span><div class="tags"><span class="tag">Rally</span><span class="tag">Bot</span><span class="tag">Vento</span></div><h2>Peteca</h2><p>Rebata a peteca, faça rallies longos e vença o bot em modos casual, rápido e com vento.</p></div>
+        <span class="cta">Jogar peteca →</span>
+      </a>
+
+      <a class="card" href="bowling.html" style="--glow: radial-gradient(circle, rgba(255,111,97,.72), transparent 64%);">
+        <div><span class="icon">🎳</span><div class="tags"><span class="tag">10 pinos</span><span class="tag">Curva</span><span class="tag">Placar</span></div><h2>Boliche</h2><p>Ajuste direção, força e curva para derrubar os pinos em uma partida de 10 frames.</p></div>
+        <span class="cta">Jogar boliche →</span>
+      </a>
+
+      <a class="card" href="brawl.html" style="--glow: radial-gradient(circle, rgba(85,183,255,.72), transparent 64%);">
+        <div><span class="icon">⭐</span><div class="tags"><span class="tag">WASD</span><span class="tag">Mouse fire</span><span class="tag">5 bots</span></div><h2>Arena Brawl</h2><p>Entre numa arena, mova pelo teclado, mire com o mouse e derrote cinco bots armados.</p></div>
+        <span class="cta">Jogar brawler →</span>
+      </a>
+
+      <a class="card" href="car-3d.html" style="--glow: radial-gradient(circle, rgba(255,209,102,.72), transparent 64%);">
+        <div><span class="icon">🏎️</span><div class="tags"><span class="tag">Pseudo-3D</span><span class="tag">Corrida</span><span class="tag">Tráfego</span></div><h2>Simulador 3D de carros</h2><p>Acelere numa pista em perspectiva, faça curvas, evite tráfego e complete três voltas.</p></div>
+        <span class="cta">Dirigir simulador →</span>
+      </a>
+    </section>
+
+    <footer>Sem build, sem dependências: sirva a pasta e abra qualquer um dos links.</footer>
+  </main>
+</body>
+</html>
